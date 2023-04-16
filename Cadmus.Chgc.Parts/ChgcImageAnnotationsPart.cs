@@ -19,7 +19,7 @@ public sealed class ChgcImageAnnotationsPart : PartBase
     /// <summary>
     /// Gets or sets the annotations.
     /// </summary>
-    public List<GalleryImageAnnotation> Annotations { get; set; }
+    public List<ChgcImageAnnotation> Annotations { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ChgcImageAnnotationsPart"/>
@@ -27,7 +27,7 @@ public sealed class ChgcImageAnnotationsPart : PartBase
     /// </summary>
     public ChgcImageAnnotationsPart()
     {
-        Annotations = new List<GalleryImageAnnotation>();
+        Annotations = new List<ChgcImageAnnotation>();
     }
 
     /// <summary>
@@ -46,24 +46,14 @@ public sealed class ChgcImageAnnotationsPart : PartBase
 
         if (Annotations?.Count > 0)
         {
-            foreach (GalleryImageAnnotation annotation in Annotations)
+            foreach (ChgcImageAnnotation annotation in Annotations)
             {
                 builder.AddValue("id", annotation.Id);
+                builder.AddValue("eid", annotation.Eid);
+                builder.AddValues("rendition", annotation.Renditions.Distinct());
 
                 if (!string.IsNullOrEmpty(annotation.Target?.Id))
                     builder.AddValue("target-id", annotation.Target.Id);
-
-                // by convention, a tag prefixed with "eid_" is assumed
-                // to represent an EID with its value following the prefix
-                if (annotation.Tags?.Count > 0)
-                {
-                    foreach (string tag in annotation.Tags.Where(t =>
-                        t.Length > 4 &&
-                        t.StartsWith("eid_", StringComparison.Ordinal)))
-                    {
-                        builder.AddValue("eid", tag[4..]);
-                    }
-                }
             }
         }
 
@@ -84,7 +74,9 @@ public sealed class ChgcImageAnnotationsPart : PartBase
             new DataPinDefinition(DataPinValueType.String,
                 "target-id", "The target ID(s) of the annotations images."),
             new DataPinDefinition(DataPinValueType.String,
-                "eid", "The EID(s) assigned to annotations.")
+                "eid", "The EID(s) assigned to annotations."),
+            new DataPinDefinition(DataPinValueType.String,
+                "rendition", "The unique rendition(s) assigned to annotations.")
         });
     }
 

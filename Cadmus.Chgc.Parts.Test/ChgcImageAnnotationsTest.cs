@@ -50,7 +50,7 @@ public sealed class ChgcImageAnnotationsPartTest
     [Fact]
     public void GetDataPins_Entries_Ok()
     {
-        GalleryImageAnnotationsPart part = new()
+        ChgcImageAnnotationsPart part = new()
         {
             ItemId = Guid.NewGuid().ToString(),
             RoleId = "some-role",
@@ -60,9 +60,10 @@ public sealed class ChgcImageAnnotationsPartTest
 
         for (int n = 1; n <= 3; n++)
         {
-            part.Annotations.Add(new GalleryImageAnnotation
+            part.Annotations.Add(new ChgcImageAnnotation
             {
                 Id = $"#a{n}",
+                Eid = $"#a{n}",
                 Tags = new List<string> { $"eid_img-anno-{n}" },
                 Target = new GalleryImage
                 {
