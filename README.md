@@ -26,3 +26,9 @@ ID: `it.vedph.chgc.image-annotations`
   - lineCount (`short`)
   - hasCallSign (`boolean`
   - note (`string`)
+
+## History
+
+### 1.0.0
+
+- 2023-05-24: updated packages (breaking change in general parts introducing [AssertedCompositeId](https://github.com/vedph/cadmus-bricks-shell/blob/master/projects/myrmidon/cadmus-refs-asserted-ids/README.md#asserted-composite-id)).
