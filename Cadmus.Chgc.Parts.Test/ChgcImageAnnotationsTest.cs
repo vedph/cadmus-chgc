@@ -89,7 +89,7 @@ public sealed class ChgcImageAnnotationsPartTest
             TestHelper.AssertPinIds(part, pin!);
 
             // eid
-            pin = pins.Find(p => p.Name == "eid" && p.Value == $"img-anno-{n}");
+            pin = pins.Find(p => p.Name == "eid" && p.Value == $"#a{n}");
             Assert.NotNull(pin);
             TestHelper.AssertPinIds(part, pin!);
 
