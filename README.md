@@ -22,12 +22,14 @@ ID: `it.vedph.chgc.image-annotations`
   - notes (`string[]`): optional notes in the annotation.
   - tags (`string[]`): optional tags in the annotation.
   - eid\* (`string`, thesaurus `chgc-ids`): the CHGC ID.
-  - renditions (`string[]`, thesaurus `chgc-renditions`)
-  - lineCount (`short`)
-  - hasCallSign (`boolean`
+  - label (`string`)
   - note (`string`)
 
 ## History
+
+### 1.1.0
+
+- 20233-06-17: refactored part model.
 
 ### 1.0.1
 

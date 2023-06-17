@@ -5,7 +5,6 @@ using Cadmus.Core.Storage;
 using Cadmus.Mongo;
 using Cadmus.General.Parts;
 using Cadmus.Philology.Parts;
-using Cadmus.Img.Parts;
 using System;
 using Cadmus.Chgc.Parts;
 

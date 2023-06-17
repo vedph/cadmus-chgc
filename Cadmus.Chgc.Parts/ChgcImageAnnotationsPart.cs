@@ -1,9 +1,6 @@
 ﻿using Cadmus.Core;
-using Cadmus.Img.Parts;
 using Fusi.Tools.Configuration;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Cadmus.Chgc.Parts;
@@ -50,10 +47,7 @@ public sealed class ChgcImageAnnotationsPart : PartBase
             {
                 builder.AddValue("id", annotation.Id);
                 builder.AddValue("eid", annotation.Eid);
-                builder.AddValues("rendition", annotation.Renditions.Distinct());
-
-                if (!string.IsNullOrEmpty(annotation.Target?.Id))
-                    builder.AddValue("target-id", annotation.Target.Id);
+                builder.AddValue("label", annotation.Label);
             }
         }
 
@@ -76,7 +70,7 @@ public sealed class ChgcImageAnnotationsPart : PartBase
             new DataPinDefinition(DataPinValueType.String,
                 "eid", "The EID(s) assigned to annotations."),
             new DataPinDefinition(DataPinValueType.String,
-                "rendition", "The unique rendition(s) assigned to annotations.")
+                "label", "The label(s) assigned to annotations.")
         });
     }
 

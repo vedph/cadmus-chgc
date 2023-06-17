@@ -1,5 +1,4 @@
 ﻿using Cadmus.Img.Parts;
-using System.Collections.Generic;
 
 namespace Cadmus.Chgc.Parts;
 
@@ -16,28 +15,20 @@ public class ChgcImageAnnotation : GalleryImageAnnotation
     public string Eid { get; set; }
 
     /// <summary>
-    /// Gets or sets the renditions.
+    /// Gets or sets an optional label.
     /// </summary>
-    public List<string> Renditions { get; set; }
-
-    /// <summary>
-    /// Gets or sets the line count.
-    /// </summary>
-    public short LineCount { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether this instance has any call signs.
-    /// </summary>
-    public bool HasCallSign { get; set; }
+    public string? Label { get; set; }
 
     /// <summary>
     /// Gets or sets a generic note.
     /// </summary>
     public string? Note { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChgcImageAnnotation"/> class.
+    /// </summary>
     public ChgcImageAnnotation()
     {
         Eid = "";
-        Renditions = new List<string>();
     }
 }
