@@ -66,7 +66,7 @@ public sealed class ChgcImageAnnotationsPart : PartBase
                "tot-count",
                "The total count of annotations."),
             new DataPinDefinition(DataPinValueType.String,
-                "target-id", "The target ID(s) of the annotations images."),
+                "id", "The target ID(s) of the annotations images."),
             new DataPinDefinition(DataPinValueType.String,
                 "eid", "The EID(s) assigned to annotations."),
             new DataPinDefinition(DataPinValueType.String,

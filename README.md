@@ -27,6 +27,10 @@ ID: `it.vedph.chgc.image-annotations`
 
 ## History
 
+### 1.1.2
+
+- 2023-06-23: updated packages.
+
 ### 1.1.0
 
 - 20233-06-17: refactored part model.

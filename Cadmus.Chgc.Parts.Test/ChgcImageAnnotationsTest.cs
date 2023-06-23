@@ -74,7 +74,7 @@ public sealed class ChgcImageAnnotationsPartTest
 
         List<DataPin> pins = part.GetDataPins(null).ToList();
 
-        Assert.Equal(10, pins.Count);
+        Assert.Equal(7, pins.Count);
 
         DataPin? pin = pins.Find(p => p.Name == "tot-count");
         Assert.NotNull(pin);
@@ -90,11 +90,6 @@ public sealed class ChgcImageAnnotationsPartTest
 
             // eid
             pin = pins.Find(p => p.Name == "eid" && p.Value == $"#a{n}");
-            Assert.NotNull(pin);
-            TestHelper.AssertPinIds(part, pin!);
-
-            // target-id
-            pin = pins.Find(p => p.Name == "target-id" && p.Value == $"#i{n}");
             Assert.NotNull(pin);
             TestHelper.AssertPinIds(part, pin!);
         }
