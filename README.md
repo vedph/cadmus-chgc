@@ -27,6 +27,8 @@ ID: `it.vedph.chgc.image-annotations`
 
 ## History
 
+- 2023-06-24: adding export library.
+
 ### 1.1.2
 
 - 2023-06-23: updated packages.
