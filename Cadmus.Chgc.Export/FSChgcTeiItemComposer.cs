@@ -46,7 +46,20 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
         _doc = new XDocument(new XElement(TEI_NS + "TEI"));
 
         // TODO add header content
-        _doc.Root!.Add(new XElement(TEI_NS + "teiHeader"));
+        _doc.Root!.Add(new XElement(TEI_NS + "teiHeader",
+            new XElement("fileDesc",
+                new XElement("titleStmt",
+                    new XElement("title", new XAttribute("type", "main"),
+                        "Compendium Historiae in genealogia Christi"),
+                    new XElement("title", new XAttribute("type", "sub"),
+                        "Electronic transcription of the manuscript " +
+                            CurrentGroupId),
+                    new XElement("author",
+                        "Petrus von Poitiers",
+                        new XElement("ex", "Petrus Pictaviensis")),
+                    new XElement("respStmt",
+                        new XElement("resp", "edited by"))
+                    ))));
 
         XElement facsimile = new(TEI_NS + "facsimile");
         _doc.Root.Add(facsimile);
