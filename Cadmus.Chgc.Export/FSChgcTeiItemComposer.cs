@@ -41,12 +41,9 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
         // not used
     }
 
-    private void OpenDocument()
+    private void AddHeader()
     {
-        _doc = new XDocument(new XElement(TEI_NS + "TEI"));
-
-        // header
-        _doc.Root!.Add(new XElement(TEI_NS + "teiHeader",
+        _doc!.Root!.Add(new XElement(TEI_NS + "teiHeader",
             new XElement(TEI_NS + "fileDesc",
                 new XElement(TEI_NS + "titleStmt",
                     new XElement(TEI_NS + "title", new XAttribute("type", "main"),
@@ -89,10 +86,18 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
                     new XElement(TEI_NS + "pubPlace", "Graz")),
                 new XElement(TEI_NS + "sourceDesc",
                     new XElement(TEI_NS + "p")))));
+    }
+
+    private void OpenDocument()
+    {
+        _doc = new XDocument(new XElement(TEI_NS + "TEI"));
+
+        // header
+        AddHeader();
 
         // facsimile and body
         XElement facsimile = new(TEI_NS + "facsimile");
-        _doc.Root.Add(facsimile);
+        _doc.Root!.Add(facsimile);
         Output!.Data[M_FACS_KEY] = facsimile;
 
         XElement body = new(TEI_NS + "body");
@@ -162,4 +167,3 @@ public class FSChgcTeiItemComposerOptions
         OutputDirectory = "";
     }
 }
-

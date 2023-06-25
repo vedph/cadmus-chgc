@@ -91,9 +91,10 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             string annId = imageId + "/" + ann.Eid;
 
             // facsimile/surface/zone
-            surface.Add(new XElement(TEI_NS + "zone",
-                // TODO geometry attributes
+            XElement zone;
+            surface.Add(zone = new XElement(TEI_NS + "zone",
                 new XAttribute(XML_NS + "id", annId)));
+            SelectorXmlConverter.Convert(ann.Selector, zone);
 
             // body/pb n=ID
             body.Add(new XElement(TEI_NS + "pb",
