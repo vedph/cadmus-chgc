@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cadmus.Chgc.Export", "Cadmu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadmus.Chgc.Export.Test", "Cadmus.Chgc.Export.Test\Cadmus.Chgc.Export.Test.csproj", "{0D42C494-9C47-471F-880F-97C4B46C0B91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chgc", "chgc\chgc.csproj", "{5F675192-0D9D-4D20-A5C4-E9DDBC5527EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{0D42C494-9C47-471F-880F-97C4B46C0B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D42C494-9C47-471F-880F-97C4B46C0B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D42C494-9C47-471F-880F-97C4B46C0B91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F675192-0D9D-4D20-A5C4-E9DDBC5527EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F675192-0D9D-4D20-A5C4-E9DDBC5527EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F675192-0D9D-4D20-A5C4-E9DDBC5527EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F675192-0D9D-4D20-A5C4-E9DDBC5527EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
