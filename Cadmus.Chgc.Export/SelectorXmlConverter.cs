@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text.RegularExpressions;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace Cadmus.Chgc.Export;
@@ -25,24 +25,39 @@ public static class SelectorXmlConverter
             return;
         }
 
-        // polygon: <svg><polygon points="..."/> e.g.:
-        // <svg><polygon points="269,389 246,467 368,529 439,413 372,379">
-        // </polygon></svg>
-        Match m = Regex.Match(selector,
-            @"^<svg><polygon\s+points=""([^""]+)"""); 
-        if (m.Success)
+        // else parse svg element
+        if (!selector.StartsWith("<svg>", StringComparison.Ordinal))
+            throw new ArgumentException("Invalid selector: " + selector);
+
+        XElement svg = XElement.Parse(selector);
+        XElement? shape = svg.Elements().FirstOrDefault();
+        switch (shape?.Name?.LocalName)
         {
-            // TODO polygon
-            return;
+            // polygon: <svg><polygon points="..."/> e.g.:
+            // <svg><polygon points="269,389 246,467 368,529 439,413 372,379">
+            // </polygon></svg>
+            case "polygon":
+                target.Add(new XAttribute("points",
+                    shape.Attribute("points")!.Value!));
+                return;
+
+            // circle: e.g.
+            // <svg><circle cx=\"364.5\" cy=\"461\" r=\"141.2276530995258\"></circle></svg>
+            case "circle":
+                // TODO
+                return;
+
+            // ellipse: e.g.
+            // <svg><ellipse cx=\"115.5\" cy=\"506\" rx=\"37.5\" ry=\"72\"></ellipse></svg>
+            case "ellipse":
+                // TODO
+                break;
+
+            // freehand: e.g.
+            // <svg><path d=\"M381 44 L381 44 L381 45 L382 46 L382 47 L384 49..."></path></svg>
+            case "path":
+                // TODO
+                break;
         }
-
-        // circle: e.g.
-        // <svg><circle cx=\"364.5\" cy=\"461\" r=\"141.2276530995258\"></circle></svg>
-
-        // ellipse: e.g.
-        // <svg><ellipse cx=\"115.5\" cy=\"506\" rx=\"37.5\" ry=\"72\"></ellipse></svg>
-
-        // freehand: e.g.
-        // <svg><path d=\"M381 44 L381 44 L381 45 L382 46 L382 47 L384 49..."></path></svg>
     }
 }

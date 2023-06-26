@@ -29,12 +29,12 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// <summary>
     /// The XML namespace.
     /// </summary>
-    public readonly XNamespace XML_NS = "http://www.w3.org/XML/1998/namespace";
+    public static readonly XNamespace XML_NS = "http://www.w3.org/XML/1998/namespace";
 
     /// <summary>
     /// The TEI namespace.
     /// </summary>
-    public readonly XNamespace TEI_NS = "http://www.tei-c.org/ns/1.0";
+    public static readonly XNamespace TEI_NS = "http://www.tei-c.org/ns/1.0";
 
     /// <summary>
     /// Gets the current group identifier.

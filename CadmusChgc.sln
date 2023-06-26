@@ -17,7 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadmus.Chgc.Export", "Cadmus.Chgc.Export\Cadmus.Chgc.Export.csproj", "{95C0AB33-8D92-4E05-B605-39F6D87850E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cadmus.Chgc.Export", "Cadmus.Chgc.Export\Cadmus.Chgc.Export.csproj", "{95C0AB33-8D92-4E05-B605-39F6D87850E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadmus.Chgc.Export.Test", "Cadmus.Chgc.Export.Test\Cadmus.Chgc.Export.Test.csproj", "{0D42C494-9C47-471F-880F-97C4B46C0B91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{95C0AB33-8D92-4E05-B605-39F6D87850E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95C0AB33-8D92-4E05-B605-39F6D87850E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95C0AB33-8D92-4E05-B605-39F6D87850E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D42C494-9C47-471F-880F-97C4B46C0B91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D42C494-9C47-471F-880F-97C4B46C0B91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D42C494-9C47-471F-880F-97C4B46C0B91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D42C494-9C47-471F-880F-97C4B46C0B91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
