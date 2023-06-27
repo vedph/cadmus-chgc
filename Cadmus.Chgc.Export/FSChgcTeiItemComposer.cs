@@ -4,6 +4,7 @@ using Fusi.Tools.Configuration;
 using System;
 using System.IO;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Cadmus.Chgc.Export;
 
@@ -90,6 +91,7 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
 
     private void OpenDocument()
     {
+        Logger?.LogInformation("Opening document for {groupId}", CurrentGroupId);
         _doc = new XDocument(new XElement(TEI_NS + "TEI"));
 
         // header
@@ -113,8 +115,10 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
             return;
         }
 
-        _doc.Save(Path.Combine(_options!.OutputDirectory ?? "",
-            CurrentGroupId + ".xml"), SaveOptions.OmitDuplicateNamespaces);
+        string path = Path.Combine(_options!.OutputDirectory ?? "",
+            CurrentGroupId + ".xml");
+        Logger?.LogInformation("Saving {path}", path);
+        _doc.Save(path, SaveOptions.OmitDuplicateNamespaces);
     }
 
     /// <summary>
@@ -146,6 +150,8 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
     /// <param name="prevGroupId">The previous group identifier.</param>
     protected override void OnGroupChanged(IItem item, string? prevGroupId)
     {
+        Logger?.LogInformation("New group ID: {groupId}", item.GroupId);
+
         base.OnGroupChanged(item, prevGroupId);
         CloseDocument();
         OpenDocument();

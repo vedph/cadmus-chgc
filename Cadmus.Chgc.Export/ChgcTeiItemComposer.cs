@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System;
 using Cadmus.Chgc.Parts;
+using Microsoft.Extensions.Logging;
 
 namespace Cadmus.Chgc.Export;
 
@@ -53,6 +54,32 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         CurrentGroupId = item.GroupId;
     }
 
+    private static XElement BuildTextParagraphs(string text, XElement target)
+    {
+        foreach (string line in text.Split('\n'))
+            target.Add(new XElement(TEI_NS + "p", line.Trim()));
+        return target;
+    }
+
+    private static void BuildLabelAndText(ChgcImageAnnotation ann, XElement target)
+    {
+        if (!string.IsNullOrEmpty(ann.Label))
+            target.Add(new XElement(TEI_NS + "label", ann.Label));
+
+        if (!string.IsNullOrEmpty(ann.Note))
+            target.Add(BuildTextParagraphs(ann.Note, new XElement(TEI_NS + "text")));
+    }
+
+    private static void BuildBodyEntryOutput(string annId, string type,
+        ChgcImageAnnotation ann, XElement target)
+    {
+        target.Add(new XAttribute("type", type),
+                   new XAttribute("corresp", $"#{ann.Eid}"),
+                   new XAttribute("facs", $"#{annId}"));
+
+        BuildLabelAndText(ann, target);
+    }
+
     /// <summary>
     /// Does the composition for the specified item.
     /// </summary>
@@ -70,41 +97,76 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         if (part == null || part.Annotations.Count == 0) return;
 
         // facsimile (set by derived class)
-        XElement? facs = Output!.GetData(M_FACS_KEY) as XElement;
-        if (facs == null)
-            throw new InvalidOperationException("Expected facsimile element");
+        XElement? facs = Output!.GetData(M_FACS_KEY) as XElement
+            ?? throw new InvalidOperationException("Expected facsimile element");
+        facs.Add(new XComment($"{ItemNumber}: {item}"));
 
-        // facsimile (set by derived class)
-        XElement? body = Output!.GetData(M_BODY_KEY) as XElement;
-        if (body == null)
-            throw new InvalidOperationException("Expected body element");
+        // body (set by derived class)
+        XElement? body = Output!.GetData(M_BODY_KEY) as XElement
+            ?? throw new InvalidOperationException("Expected body element");
+        body.Add(new XComment($"{ItemNumber}: {item}"));
 
         // facsimile/surface n=ID
-        // TODO id
         string imageId = $"{CurrentGroupId}/" + part.Annotations[0].Target!.Id;
         XElement surface = new(TEI_NS + "surface",
             new XAttribute("n", imageId));
         facs.Add(surface);
 
+        // body/pb n=ID
+        body.Add(new XElement(TEI_NS + "pb",
+            new XAttribute("n", imageId)));
+
+        // part's annotations
         foreach (ChgcImageAnnotation ann in part.Annotations)
         {
             string annId = imageId + "/" + ann.Eid;
+            Logger?.LogInformation("Annotation {annId} {annEid} {annTarget}",
+                annId, ann.Eid, ann.Target);
 
             // facsimile/surface/zone
+            surface.Add(new XComment($"ann {ann.Id}"));
+
             XElement zone;
             surface.Add(zone = new XElement(TEI_NS + "zone",
                 new XAttribute(XML_NS + "id", annId)));
             SelectorXmlConverter.Convert(ann.Selector, zone);
 
-            // body/pb n=ID
-            body.Add(new XElement(TEI_NS + "pb",
-                new XAttribute("n", imageId)));
-
             // body/div according to type
+            body.Add(new XComment($"ann {ann.Id}"));
             XElement div = new(TEI_NS + "div");
             body.Add(div);
 
-            // TODO content of div according to ann EID prefix
+            switch (ann.Eid[0])
+            {
+                case 'n':
+                    // node
+                    BuildBodyEntryOutput(annId, "node", ann, div);
+                    break;
+                case 't':
+                    // text
+                    BuildBodyEntryOutput(annId, "text", ann, div);
+                    break;
+                case 'd':
+                    // diagram
+                    BuildBodyEntryOutput(annId, "diagram", ann, div);
+                    break;
+                case 'p':
+                    // picture
+                    BuildBodyEntryOutput(annId, "picture", ann, div);
+                    break;
+                case 'g':
+                    // group
+                    BuildBodyEntryOutput(annId, "group", ann, div);
+                    break;
+                case 'c':
+                    // connection
+                    BuildBodyEntryOutput(annId, "connection", ann, div);
+                    break;
+                default:
+                    Logger?.LogWarning("Unknown annotation type in ID \"{type}\"",
+                        ann.Eid);
+                    break;
+            }
         }
     }
 }
