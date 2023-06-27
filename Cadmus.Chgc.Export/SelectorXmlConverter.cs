@@ -6,6 +6,44 @@ namespace Cadmus.Chgc.Export;
 
 public static class SelectorXmlConverter
 {
+    private static (double x1, double y1, double x2, double y2)
+        GetPolygonBoundingBox(string points)
+    {
+        // get min and max for x and from points where each point is a pair
+        // of coords separated by comma, and each pair is separated by space
+        double minX = double.MaxValue;
+        double minY = double.MaxValue;
+        double maxX = double.MinValue;
+        double maxY = double.MinValue;
+        foreach (string pair in points.Split(' '))
+        {
+            string[] coords = pair.Split(',');
+            double x = double.Parse(coords[0]);
+            double y = double.Parse(coords[1]);
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = y;
+        }
+        return (minX, minY, maxX, maxY);
+    }
+
+    private static (double x1, double y1, double x2, double y2)
+        GetEllipseBoundingBox(double cx, double cy, double rx, double ry)
+    {
+        // get bounding box from center (cx,cy) and axes (rx, ry)
+        return (cx - rx, cy - ry, cx + rx, cy + ry);
+    }
+
+    private static void AddBoundingBoxAttrs(double x1, double y1,
+        double x2, double y2, XElement target)
+    {
+        target.Add(new XAttribute("ulx", x1));
+        target.Add(new XAttribute("uly", y1));
+        target.Add(new XAttribute("lrx", x2));
+        target.Add(new XAttribute("lry", y2));
+    }
+
     public static void Convert(string selector, XElement target)
     {
         if (selector is null) throw new ArgumentNullException(nameof(selector));
@@ -18,10 +56,15 @@ public static class SelectorXmlConverter
             string[] values = csv.Split(',');
             if (values.Length != 4)
                 throw new ArgumentException("Invalid selector: " + selector);
-            target.Add(new XAttribute("ulx", values[0]));
-            target.Add(new XAttribute("uly", values[1]));
-            target.Add(new XAttribute("lrx", values[2]));
-            target.Add(new XAttribute("lry", values[3]));
+            double x = double.Parse(values[0]);
+            double y = double.Parse(values[1]);
+            double w = double.Parse(values[2]);
+            double h = double.Parse(values[3]);
+
+            target.Add(new XAttribute("ulx", x));
+            target.Add(new XAttribute("uly", y));
+            target.Add(new XAttribute("lrx", x + w));
+            target.Add(new XAttribute("lry", y + h));
             return;
         }
 
@@ -42,21 +85,39 @@ public static class SelectorXmlConverter
                 return;
 
             // circle: e.g.
-            // <svg><circle cx=\"364.5\" cy=\"461\" r=\"141.2276530995258\"></circle></svg>
+            // <svg><circle cx=\"364.5\" cy=\"461\" r=\"141.2276530995258\">
+            // </circle></svg>
             case "circle":
-                // TODO
+                target.Add(new XComment(selector));
+                double r = double.Parse(shape.Attribute("r")!.Value!);
+                (double x1, double y1, double x2, double y2) =
+                    GetEllipseBoundingBox(
+                        double.Parse(shape.Attribute("cx")!.Value!),
+                        double.Parse(shape.Attribute("cy")!.Value!),
+                        r, r);
+                AddBoundingBoxAttrs(x1, y1, x2, y2, target);
                 return;
 
             // ellipse: e.g.
-            // <svg><ellipse cx=\"115.5\" cy=\"506\" rx=\"37.5\" ry=\"72\"></ellipse></svg>
+            // <svg><ellipse cx=\"115.5\" cy=\"506\" rx=\"37.5\" ry=\"72\">
+            // </ellipse></svg>
             case "ellipse":
-                // TODO
+                target.Add(new XComment(selector));
+                (x1, y1, x2, y2) = GetEllipseBoundingBox(
+                    double.Parse(shape.Attribute("cx")!.Value!),
+                    double.Parse(shape.Attribute("cy")!.Value!),
+                    double.Parse(shape.Attribute("rx")!.Value!),
+                    double.Parse(shape.Attribute("ry")!.Value!));
+                AddBoundingBoxAttrs(x1, y1, x2, y2, target);
                 break;
 
             // freehand: e.g.
-            // <svg><path d=\"M381 44 L381 44 L381 45 L382 46 L382 47 L384 49..."></path></svg>
+            // <svg><path d=\"M381 44 L381 44 L381 45 L382 46 L382 47 L384 49...">
+            // </path></svg>
             case "path":
-                // TODO
+                target.Add(new XComment(selector));
+                // TODO eventually calculate bbox from path
+                // calculate bounding box from SVG path
                 break;
         }
     }

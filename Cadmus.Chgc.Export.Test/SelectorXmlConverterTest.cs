@@ -37,4 +37,48 @@ public class SelectorXmlConverterTest
 
         Assert.Equal(points, zone.Attribute("points")?.Value);
     }
+
+    [Fact]
+    public void Convert_Circle_Ok()
+    {
+        XElement zone = new(ChgcTeiItemComposer.TEI_NS + "zone",
+            new XAttribute("id", "test"));
+
+        const string selector = "<svg><circle cx=\"100\" cy=\"50\" r=\"10\">" +
+            "</circle></svg>";
+        SelectorXmlConverter.Convert(selector, zone);
+
+        // bbox
+        Assert.Equal(5, zone.Attributes().Count());
+        Assert.Equal("90", zone.Attribute("ulx")?.Value);
+        Assert.Equal("40", zone.Attribute("uly")?.Value);
+        Assert.Equal("110", zone.Attribute("lrx")?.Value);
+        Assert.Equal("60", zone.Attribute("lry")?.Value);
+
+        // comment
+        Assert.Single(zone.Nodes());
+        Assert.Equal($"<!--{selector}-->", zone.Nodes().First().ToString());
+    }
+
+    [Fact]
+    public void Convert_Ellipse_Ok()
+    {
+        XElement zone = new(ChgcTeiItemComposer.TEI_NS + "zone",
+            new XAttribute("id", "test"));
+
+        const string selector = "<svg><ellipse cx=\"100\" cy=\"50\" " +
+            "rx=\"10\" ry=\"5\"></ellipse></svg>";
+        SelectorXmlConverter.Convert(selector, zone);
+
+        // bbox
+        Assert.Equal(5, zone.Attributes().Count());
+        Assert.Equal("90", zone.Attribute("ulx")?.Value);
+        Assert.Equal("45", zone.Attribute("uly")?.Value);
+        Assert.Equal("110", zone.Attribute("lrx")?.Value);
+        Assert.Equal("55", zone.Attribute("lry")?.Value);
+
+        // comment
+        Assert.Single(zone.Nodes());
+        Assert.Equal($"<!--{selector}-->", zone.Nodes().First().ToString());
+    }
 }
