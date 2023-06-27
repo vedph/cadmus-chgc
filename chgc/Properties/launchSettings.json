@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "chgc": {
+      "commandName": "Project",
+      "commandLineArgs": "c:\\users\\dfusi\\desktop\\out"
+    }
+  }
+}

@@ -3,6 +3,7 @@ using Spectre.Console.Cli;
 using Spectre.Console;
 using System.Diagnostics;
 using System.Reflection;
+using Cadmus.Chgc.Cli.Commands;
 
 namespace Cadmus.Chgc.Cli;
 
@@ -53,8 +54,8 @@ public static class Program
             CommandApp app = new();
             app.Configure(config =>
             {
-                //config.AddCommand<BuildIndexSqlCommand>("build-sql")
-                //    .WithDescription("Build SQL code from an index query.");
+                config.AddCommand<BuildTeiCommand>("build-tei")
+                    .WithDescription("Build TEI document(s) from Cadmus database.");
             });
 
             int result = await app.RunAsync(args);
