@@ -24,10 +24,12 @@ ID: `it.vedph.chgc.image-annotations`
   - eid\* (`string`, thesaurus `chgc-ids`): the CHGC ID.
   - label (`string`)
   - note (`string`)
- 
+
 ## CLI
 
-The CLI tool is used to export TEI from a CHGC Cadmus database. This is work in progress; currently the only command is `build-tei` to build one or more TEI documents from scratch.
+The CLI tool is a multiple-platform, command-line based tool used to export TEI from a CHGC Cadmus database. This is work in progress; currently the only command is `build-tei` to build one or more TEI documents from scratch. The tool can run in Windows, MacOS, and most Linux flavors.
+
+>The import area of this project workflow (=[importing thesauri](https://github.com/vedph/cadmus_tool#thesaurus-import-command) of IDs from Excel/CSV/plain text) is covered by the [generic Cadmus CLI tool](https://github.com/vedph/cadmus_tool).
 
 ### Build TEI Command
 
