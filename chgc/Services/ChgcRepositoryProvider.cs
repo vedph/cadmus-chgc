@@ -13,7 +13,7 @@ internal class ChgcRepositoryProvider : IRepositoryProvider
     private readonly IPartTypeProvider _partTypeProvider;
 
     /// <summary>
-    /// The connection string.
+    /// Gets or sets the connection string to use.
     /// </summary>
     public string ConnectionString { get; set; }
 
@@ -22,9 +22,10 @@ internal class ChgcRepositoryProvider : IRepositoryProvider
     /// class.
     /// </summary>
     /// <exception cref="ArgumentNullException">configuration</exception>
-    public ChgcRepositoryProvider()
+    public ChgcRepositoryProvider(string connectionString)
     {
-        ConnectionString = "";
+        ConnectionString = connectionString
+            ?? throw new ArgumentNullException(nameof(connectionString));
         TagAttributeToTypeMap map = new();
         map.Add(new[]
         {
@@ -59,9 +60,7 @@ internal class ChgcRepositoryProvider : IRepositoryProvider
 
         repository.Configure(new MongoCadmusRepositoryOptions
         {
-            ConnectionString = ConnectionString ??
-            throw new InvalidOperationException(
-                "No connection string set for IRepositoryProvider implementation")
+            ConnectionString = ConnectionString
         });
 
         return repository;

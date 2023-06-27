@@ -15,6 +15,13 @@ internal sealed class BuildTeiCommand : AsyncCommand<BuildTeiCommandOptions>
     public override Task<int> ExecuteAsync(CommandContext context,
         BuildTeiCommandOptions settings)
     {
+        AnsiConsole.MarkupLine("[green]BUILD TEI[/]");
+        AnsiConsole.MarkupLine($"Output dir: [cyan]{settings.OutputDirectory}[/]");
+        if (!string.IsNullOrEmpty(settings.DatabaseName))
+            AnsiConsole.MarkupLine($"Database: [cyan]{settings.DatabaseName}[/]");
+        if (!string.IsNullOrEmpty(settings.GroupId))
+            AnsiConsole.MarkupLine($"Group ID: [cyan]{settings.GroupId}[/]");
+
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Star)
             .Start("Building TEI...", ctx =>
@@ -35,7 +42,7 @@ internal sealed class BuildTeiCommand : AsyncCommand<BuildTeiCommandOptions>
             // repository
             AnsiConsole.MarkupLine("Creating repository...");
             ICadmusRepository repository =
-                new ChgcRepositoryProvider().CreateRepository();
+                new ChgcRepositoryProvider(cs).CreateRepository();
 
             // composer
             AnsiConsole.MarkupLine("Creating composer...");
@@ -51,7 +58,8 @@ internal sealed class BuildTeiCommand : AsyncCommand<BuildTeiCommandOptions>
                 IItem? item = repository.GetItem(id);
                 if (item == null) continue;
 
-                AnsiConsole.MarkupLine(item.ToString()!);
+                AnsiConsole.MarkupLineInterpolated(
+                    $"{item.GroupId}: {item.Title} ({item.Id})");
                 composer.Compose(item);
             }
             composer.Close();

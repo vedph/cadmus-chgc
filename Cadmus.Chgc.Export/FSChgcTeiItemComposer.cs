@@ -107,7 +107,11 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
 
     private void CloseDocument()
     {
-        if (_doc == null) return;
+        if (_doc == null || _doc.Root?.Element(
+            TEI_NS + "facsimile")?.HasElements != true)
+        {
+            return;
+        }
 
         _doc.Save(Path.Combine(_options!.OutputDirectory ?? "",
             CurrentGroupId + ".xml"), SaveOptions.OmitDuplicateNamespaces);

@@ -2,7 +2,7 @@
   "profiles": {
     "chgc": {
       "commandName": "Project",
-      "commandLineArgs": "c:\\users\\dfusi\\desktop\\out"
+      "commandLineArgs": "build-tei c:\\users\\dfusi\\desktop\\out -g ms-a"
     }
   }
 }

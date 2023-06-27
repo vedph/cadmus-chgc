@@ -70,12 +70,12 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         if (part == null || part.Annotations.Count == 0) return;
 
         // facsimile (set by derived class)
-        XElement? facs = Context.GetData(M_FACS_KEY) as XElement;
+        XElement? facs = Output!.GetData(M_FACS_KEY) as XElement;
         if (facs == null)
             throw new InvalidOperationException("Expected facsimile element");
 
         // facsimile (set by derived class)
-        XElement? body = Context.GetData(M_BODY_KEY) as XElement;
+        XElement? body = Output!.GetData(M_BODY_KEY) as XElement;
         if (body == null)
             throw new InvalidOperationException("Expected body element");
 
