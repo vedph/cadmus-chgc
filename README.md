@@ -33,7 +33,7 @@ The CLI tool is a multiple-platform, command-line based tool used to export TEI 
 
 ### Build TEI Command
 
-🎯 Build TEI documents from a CHGC database.
+🎯 Build and/or patch TEI documents from a CHGC database. If a TEI document exists, it will be updated. Otherwise, a new one will be created.
 
 Syntax:
 

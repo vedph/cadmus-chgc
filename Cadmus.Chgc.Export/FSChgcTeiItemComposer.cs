@@ -149,17 +149,6 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
     }
 
     /// <summary>
-    /// Open the composer.
-    /// </summary>
-    /// <param name="output">The output object to use, or null to create
-    /// a new one.</param>
-    //public override void Open(ItemComposition? output = null)
-    //{
-    //    base.Open(output);
-    //    OpenDocument();
-    //}
-
-    /// <summary>
     /// Close the composer.
     /// </summary>
     public override void Close()

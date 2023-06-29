@@ -28,6 +28,12 @@ public static class CommentedElementSorter
         return null;
     }
 
+    /// <summary>
+    /// Sorts the <paramref name="parent"/>'s child elements.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    /// <param name="GetSortKey">The sort key getter function.</param>
+    /// <returns>New parent element with sorted children.</returns>
     public static XElement SortChildElements(XElement parent,
         Func<XElement,string> GetSortKey)
     {
