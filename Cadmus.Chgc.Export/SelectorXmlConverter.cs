@@ -44,6 +44,14 @@ public static class SelectorXmlConverter
         target.Add(new XAttribute("lry", y2));
     }
 
+    /// <summary>
+    /// Converts the specified selector into a set of attributes on the target
+    /// element.
+    /// </summary>
+    /// <param name="selector">The selector.</param>
+    /// <param name="target">The target element.</param>
+    /// <exception cref="ArgumentNullException">selector or target</exception>
+    /// <exception cref="ArgumentException">Invalid selector</exception>
     public static void Convert(string selector, XElement target)
     {
         if (selector is null) throw new ArgumentNullException(nameof(selector));

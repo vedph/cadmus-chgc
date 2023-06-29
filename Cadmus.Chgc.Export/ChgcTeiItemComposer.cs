@@ -106,7 +106,9 @@ public abstract class ChgcTeiItemComposer : ItemComposer
 
         // facsimile/surface @n=ID @source=item ID
         string imageId = $"{CurrentGroupId}/" + part.Annotations[0].Target!.Id;
-        XElement surface = new(TEI_NS + "surface",
+        XElement surface = facs.Elements(TEI_NS + "surface").FirstOrDefault(
+            e => e.Attribute("n")!.Value == imageId) ??
+            new(TEI_NS + "surface",
             new XAttribute("n", imageId),
             new XAttribute("source", "#" + item.Id));
         facs.Add(surface);
@@ -128,15 +130,19 @@ public abstract class ChgcTeiItemComposer : ItemComposer
                 annId, ann.Eid, ann.Target);
 
             // facsimile/surface/zone @id=annID @source=GUID
-            XElement zone = new(TEI_NS + "zone",
-                new XAttribute(XML_NS + "id", annId),
-                new XAttribute("source", ann.Id));
+            XElement zone = surface.Elements(TEI_NS + "zone").FirstOrDefault(
+                e => e.Attribute(XML_NS + "id")!.Value == annId) ??
+                new(TEI_NS + "zone",
+                    new XAttribute(XML_NS + "id", annId),
+                    new XAttribute("source", ann.Id));
             surface.Add(zone);
             SelectorXmlConverter.Convert(ann.Selector, zone);
 
             // body/div according to type
-            XElement div = new(TEI_NS + "div",
-                new XAttribute("source", ann.Id));
+            string annIdRef = "#" + annId;
+            XElement div = body.Elements(TEI_NS + "div").FirstOrDefault(
+                e => e.Attribute("facs")!.Value == annIdRef) ??
+                new(TEI_NS + "div", new XAttribute("source", ann.Id));
             body.Add(div);
 
             switch (ann.Eid[0])
