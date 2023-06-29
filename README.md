@@ -199,7 +199,9 @@ A sample output follows, from a couple of mock items where only the first one ha
 
 ## History
 
-- 2023-06-29: added `source` attribute.
+- 2023-06-29:
+  - added `source` attribute.
+  - adapted `FSChgcTeiItemComposer` for patching.
 - 2023-06-24: adding export library.
 
 ### 1.1.2

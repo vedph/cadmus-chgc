@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace Cadmus.Chgc.Export;
 
@@ -97,6 +96,7 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
     {
         if (CurrentGroupId == null) return;
 
+        // load or create XML document
         Logger?.LogInformation("Opening document for {groupId}", CurrentGroupId);
         string path = GetTeiFilePath(CurrentGroupId);
         _doc = File.Exists(path)
@@ -140,12 +140,9 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
 
     private void CloseDocument()
     {
-        if (_doc == null || CurrentGroupId == null)
-            //|| _doc.Root?.Element(TEI_NS + "facsimile")?.HasElements != true)
-        {
-            return;
-        }
+        if (_doc == null || CurrentGroupId == null) return;
 
+        // save XML document
         string path = GetTeiFilePath(CurrentGroupId);
         Logger?.LogInformation("Saving {path}", path);
         _doc.Save(path, SaveOptions.OmitDuplicateNamespaces);
@@ -156,11 +153,11 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
     /// </summary>
     /// <param name="output">The output object to use, or null to create
     /// a new one.</param>
-    public override void Open(ItemComposition? output = null)
-    {
-        base.Open(output);
-        OpenDocument();
-    }
+    //public override void Open(ItemComposition? output = null)
+    //{
+    //    base.Open(output);
+    //    OpenDocument();
+    //}
 
     /// <summary>
     /// Close the composer.

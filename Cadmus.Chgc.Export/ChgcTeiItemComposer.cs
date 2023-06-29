@@ -5,7 +5,6 @@ using System.Linq;
 using System;
 using Cadmus.Chgc.Parts;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 
 namespace Cadmus.Chgc.Export;
 
