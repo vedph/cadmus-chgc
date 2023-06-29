@@ -18,8 +18,8 @@ public class SelectorXmlConverterTest
 
         Assert.Equal("10", zone.Attribute("ulx")?.Value);
         Assert.Equal("20", zone.Attribute("uly")?.Value);
-        Assert.Equal("300", zone.Attribute("lrx")?.Value);
-        Assert.Equal("400", zone.Attribute("lry")?.Value);
+        Assert.Equal("310", zone.Attribute("lrx")?.Value);
+        Assert.Equal("420", zone.Attribute("lry")?.Value);
     }
 
     [Fact]

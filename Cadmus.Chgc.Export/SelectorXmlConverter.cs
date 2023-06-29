@@ -38,10 +38,10 @@ public static class SelectorXmlConverter
     private static void AddBoundingBoxAttrs(double x1, double y1,
         double x2, double y2, XElement target)
     {
-        target.Add(new XAttribute("ulx", x1));
-        target.Add(new XAttribute("uly", y1));
-        target.Add(new XAttribute("lrx", x2));
-        target.Add(new XAttribute("lry", y2));
+        target.SetAttributeValue("ulx", x1);
+        target.SetAttributeValue("uly", y1);
+        target.SetAttributeValue("lrx", x2);
+        target.SetAttributeValue("lry", y2);
     }
 
     /// <summary>
@@ -69,10 +69,10 @@ public static class SelectorXmlConverter
             double w = double.Parse(values[2]);
             double h = double.Parse(values[3]);
 
-            target.Add(new XAttribute("ulx", x));
-            target.Add(new XAttribute("uly", y));
-            target.Add(new XAttribute("lrx", x + w));
-            target.Add(new XAttribute("lry", y + h));
+            target.SetAttributeValue("ulx", x);
+            target.SetAttributeValue("uly", y);
+            target.SetAttributeValue("lrx", x + w);
+            target.SetAttributeValue("lry", y + h);
             return;
         }
 
@@ -88,8 +88,8 @@ public static class SelectorXmlConverter
             // <svg><polygon points="269,389 246,467 368,529 439,413 372,379">
             // </polygon></svg>
             case "polygon":
-                target.Add(new XAttribute("points",
-                    shape.Attribute("points")!.Value!));
+                target.SetAttributeValue("points",
+                    shape.Attribute("points")!.Value!);
                 return;
 
             // circle: e.g.
