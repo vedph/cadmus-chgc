@@ -63,19 +63,35 @@ public abstract class ChgcTeiItemComposer : ItemComposer
 
     private static void BuildLabelAndText(ChgcImageAnnotation ann, XElement target)
     {
+        // label
+        XElement? label = target.Element(TEI_NS + "label");
         if (!string.IsNullOrEmpty(ann.Label))
-            target.Add(new XElement(TEI_NS + "label", ann.Label));
+        {
+            if (label != null) label.Value = ann.Label;
+            else target.Add(new XElement(TEI_NS + "label", ann.Label));
+        }
+        else label?.Remove();
 
+        // text
+        XElement? note = target.Element(TEI_NS + "text");
         if (!string.IsNullOrEmpty(ann.Note))
-            target.Add(BuildTextParagraphs(ann.Note, new XElement(TEI_NS + "text")));
+        {
+            if (note != null) note.Value = ann.Note;
+            else
+            {
+                target.Add(BuildTextParagraphs(ann.Note,
+                    new XElement(TEI_NS + "text")));
+            }
+        }
+        else note?.Remove();
     }
 
     private static void BuildBodyEntryOutput(string annId, string type,
         ChgcImageAnnotation ann, XElement target)
     {
-        target.Add(new XAttribute("type", type),
-                   new XAttribute("corresp", $"#{ann.Eid}"),
-                   new XAttribute("facs", $"#{annId}"));
+        target.SetAttributeValue("type", type);
+        target.SetAttributeValue("corresp", $"#{ann.Eid}");
+        target.SetAttributeValue("facs", $"#{annId}");
 
         BuildLabelAndText(ann, target);
     }
@@ -146,10 +162,13 @@ public abstract class ChgcTeiItemComposer : ItemComposer
 
             // body/div according to type
             string annIdRef = "#" + annId;
-            XElement div = body.Elements(TEI_NS + "div").FirstOrDefault(
-                e => e.Attribute("facs")!.Value == annIdRef) ??
-                new(TEI_NS + "div", new XAttribute("source", ann.Id));
-            body.Add(div);
+            XElement? div = body.Elements(TEI_NS + "div").FirstOrDefault(
+                e => e.Attribute("facs")!.Value == annIdRef);
+            if (div == null)
+            {
+                div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
+                body.Add(div);
+            }
 
             switch (ann.Eid[0])
             {
