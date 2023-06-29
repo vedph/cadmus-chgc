@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using Cadmus.Chgc.Parts;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Cadmus.Chgc.Export;
 
@@ -99,41 +100,44 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         // facsimile (set by derived class)
         XElement? facs = Output!.GetData(M_FACS_KEY) as XElement
             ?? throw new InvalidOperationException("Expected facsimile element");
-        facs.Add(new XComment($"{ItemNumber}: {item}"));
 
         // body (set by derived class)
         XElement? body = Output!.GetData(M_BODY_KEY) as XElement
             ?? throw new InvalidOperationException("Expected body element");
-        body.Add(new XComment($"{ItemNumber}: {item}"));
 
-        // facsimile/surface n=ID
+        // facsimile/surface @n=ID @source=item ID
         string imageId = $"{CurrentGroupId}/" + part.Annotations[0].Target!.Id;
         XElement surface = new(TEI_NS + "surface",
-            new XAttribute("n", imageId));
+            new XAttribute("n", imageId),
+            new XAttribute("source", "#" + item.Id));
         facs.Add(surface);
 
-        // body/pb n=ID
+        // body/pb n=ID source=item ID
         body.Add(new XElement(TEI_NS + "pb",
-            new XAttribute("n", imageId)));
+            new XAttribute("n", imageId),
+            new XAttribute("source", "#" + item.Id)));
 
-        // part's annotations
-        foreach (ChgcImageAnnotation ann in part.Annotations)
+        // part's annotations (sorted by ID)
+        var sortedAnnotations = from a in part.Annotations
+                         let annId = imageId + "/" + a.Eid
+                         orderby annId
+                         select a;
+        foreach (ChgcImageAnnotation ann in sortedAnnotations)
         {
             string annId = imageId + "/" + ann.Eid;
             Logger?.LogInformation("Annotation {annId} {annEid} {annTarget}",
                 annId, ann.Eid, ann.Target);
 
-            // facsimile/surface/zone
-            surface.Add(new XComment($"ann {ann.Id}"));
-
-            XElement zone;
-            surface.Add(zone = new XElement(TEI_NS + "zone",
-                new XAttribute(XML_NS + "id", annId)));
+            // facsimile/surface/zone @id=annID @source=GUID
+            XElement zone = new(TEI_NS + "zone",
+                new XAttribute(XML_NS + "id", annId),
+                new XAttribute("source", ann.Id));
+            surface.Add(zone);
             SelectorXmlConverter.Convert(ann.Selector, zone);
 
             // body/div according to type
-            body.Add(new XComment($"ann {ann.Id}"));
-            XElement div = new(TEI_NS + "div");
+            XElement div = new(TEI_NS + "div",
+                new XAttribute("source", ann.Id));
             body.Add(div);
 
             switch (ann.Eid[0])

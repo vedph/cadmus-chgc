@@ -137,6 +137,8 @@ where:
 
 > ⚠️ `WHERE-FROM??` currently marks those template values which are not sure. For the moment I've just included `eid` here too.
 
+Also, I add a `source` attribute to each surface, zone, pb, and div elements, just to keep track of the original source of the data. You can get rid of it if you want.
+
 A sample output follows, from a couple of mock items where only the first one has two rectangular annotations:
 
 ```xml
@@ -175,27 +177,21 @@ A sample output follows, from a couple of mock items where only the first one ha
     </fileDesc>
   </teiHeader>
   <facsimile>
-    <!--1: f134aaf2-fe44-4057-8723-0d94f7068fdd: a - page 001 [default]-->
-    <surface n="ms-a/7">
-      <!--ann #4a706b03-b651-4a89-b4a4-b2b61b85b863-->
-      <zone xml:id="ms-a/7/n-aaron" ulx="456" uly="100" lrx="698" lry="337" />
-      <!--ann #4325e8eb-40c7-4dc9-a891-f7f27510cef3-->
-      <zone xml:id="ms-a/7/n-abacuc" ulx="220" uly="786" lrx="418" lry="934" />
+    <surface n="ms-a/7" source="#f134aaf2-fe44-4057-8723-0d94f7068fdd">
+      <zone xml:id="ms-a/7/n-aaron" source="#4a706b03-b651-4a89-b4a4-b2b61b85b863" ulx="456" uly="100" lrx="698" lry="337" />
+      <zone xml:id="ms-a/7/n-abacuc" source="#4325e8eb-40c7-4dc9-a891-f7f27510cef3" ulx="220" uly="786" lrx="418" lry="934" />
     </surface>
   </facsimile>
   <text>
     <body>
-      <!--1: f134aaf2-fe44-4057-8723-0d94f7068fdd: a - page 001 [default]-->
-      <pb n="ms-a/7" />
-      <!--ann #4a706b03-b651-4a89-b4a4-b2b61b85b863-->
-      <div type="node" corresp="#n-aaron" facs="#ms-a/7/n-aaron">
+      <pb n="ms-a/7" source="#f134aaf2-fe44-4057-8723-0d94f7068fdd" />
+      <div source="#4a706b03-b651-4a89-b4a4-b2b61b85b863" type="node" corresp="#n-aaron" facs="#ms-a/7/n-aaron">
         <label>Aaron</label>
         <text>
           <p>A note about Aaron</p>
         </text>
       </div>
-      <!--ann #4325e8eb-40c7-4dc9-a891-f7f27510cef3-->
-      <div type="node" corresp="#n-abacuc" facs="#ms-a/7/n-abacuc" />
+      <div source="#4325e8eb-40c7-4dc9-a891-f7f27510cef3" type="node" corresp="#n-abacuc" facs="#ms-a/7/n-abacuc" />
     </body>
   </text>
 </TEI>
