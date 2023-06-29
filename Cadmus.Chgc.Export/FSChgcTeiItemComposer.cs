@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace Cadmus.Chgc.Export;
 
@@ -89,34 +90,63 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
                     new XElement(TEI_NS + "p")))));
     }
 
+    private string GetTeiFilePath(string groupId) =>
+        Path.Combine(_options!.OutputDirectory ?? "", groupId + ".xml");
+
     private void OpenDocument()
     {
+        if (CurrentGroupId == null) return;
+
         Logger?.LogInformation("Opening document for {groupId}", CurrentGroupId);
-        _doc = new XDocument(new XElement(TEI_NS + "TEI"));
+        string path = GetTeiFilePath(CurrentGroupId);
+        _doc = File.Exists(path)
+            ? XDocument.Load(path,
+                LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo)
+            : new XDocument(new XElement(TEI_NS + "TEI"));
 
-        // header
-        AddHeader();
+        // ensure root TEI element exists
+        if (_doc.Root == null) _doc.Add(new XElement(TEI_NS + "TEI"));
 
-        // facsimile and body
-        XElement facsimile = new(TEI_NS + "facsimile");
-        _doc.Root!.Add(facsimile);
+        // ensure teiHeader exists
+        if (_doc.Root!.Element(TEI_NS + "teiHeader") == null)
+            AddHeader();
+
+        // ensure TEI/facsimile exists
+        XElement? facsimile = _doc.Root.Element(TEI_NS + "facsimile");
+        if (facsimile == null)
+        {
+            facsimile = new(TEI_NS + "facsimile");
+            _doc.Root!.Add(facsimile);
+        }
         Output!.Data[M_FACS_KEY] = facsimile;
 
-        XElement body = new(TEI_NS + "body");
-        _doc.Root.Add(new XElement(TEI_NS + "text", body));
+        // ensure TEI/text exists
+        XElement? text = _doc.Root.Element(TEI_NS + "text");
+        if (text == null)
+        {
+            text = new(TEI_NS + "text");
+            _doc.Root.Add(text);
+        }
+
+        // ensure TEI/text/body exists
+        XElement? body = text.Element(TEI_NS + "body");
+        if (body == null)
+        {
+            body = new(TEI_NS + "body");
+            text.Add(body);
+        }
         Output!.Data[M_BODY_KEY] = body;
     }
 
     private void CloseDocument()
     {
-        if (_doc == null || _doc.Root?.Element(
-            TEI_NS + "facsimile")?.HasElements != true)
+        if (_doc == null || CurrentGroupId == null)
+            //|| _doc.Root?.Element(TEI_NS + "facsimile")?.HasElements != true)
         {
             return;
         }
 
-        string path = Path.Combine(_options!.OutputDirectory ?? "",
-            CurrentGroupId + ".xml");
+        string path = GetTeiFilePath(CurrentGroupId);
         Logger?.LogInformation("Saving {path}", path);
         _doc.Save(path, SaveOptions.OmitDuplicateNamespaces);
     }
