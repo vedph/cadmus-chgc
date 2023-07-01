@@ -54,6 +54,103 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         CurrentGroupId = item.GroupId;
     }
 
+    /// <summary>
+    /// Adds the TEI header to the specified root element.
+    /// </summary>
+    /// <param name="root">The root element.</param>
+    /// <exception cref="ArgumentNullException">root</exception>
+    protected void AddHeader(XElement root)
+    {
+        if (root is null) throw new ArgumentNullException(nameof(root));
+
+        root.Add(new XElement(TEI_NS + "teiHeader",
+            new XElement(TEI_NS + "fileDesc",
+                new XElement(TEI_NS + "titleStmt",
+                    new XElement(TEI_NS + "title", new XAttribute("type", "main"),
+                        "Compendium Historiae in genealogia Christi"),
+                    new XElement(TEI_NS + "title", new XAttribute("type", "sub"),
+                        "Electronic transcription of the manuscript " +
+                            CurrentGroupId),
+                    new XElement(TEI_NS + "author",
+                        "Petrus von Poitiers",
+                        new XElement(TEI_NS + "ex", "Petrus Pictaviensis")),
+                    new XElement(TEI_NS + "respStmt",
+                        new XElement(TEI_NS + "resp", "edited by"),
+                        new XElement(TEI_NS + "persName",
+                            new XAttribute("ref", "#")
+                    ))),
+                new XElement(TEI_NS + "publicationStmt",
+                    new XElement(TEI_NS + "publisher",
+                        new XElement(TEI_NS + "orgName",
+                            new XAttribute("corresp",
+                                "https://kunstgeschichte.unigraz.at"),
+                            "Institut für Kunstgeschichte, " +
+                            "Karl-Franzens-Universität Graz")),
+                    new XElement(TEI_NS + "authority",
+                        new XElement(TEI_NS + "orgName",
+                            new XAttribute("corresp",
+                                "https://informationsmodellierung.unigraz.at"),
+                            "Zentrum für Informationsmodellierung - Austrian " +
+                            "Centre for Digital Humanities, " +
+                            "Karl-Franzens-Universität Graz")),
+                    new XElement(TEI_NS + "distributor",
+                        new XElement(TEI_NS + "orgName",
+                            new XAttribute("ref", "https://gams.uni-graz.at"),
+                            "GAMS - Geisteswissenschaftliches Asset Management System")),
+                    new XElement(TEI_NS + "availability",
+                        new XElement(TEI_NS + "licence",
+                            new XAttribute("target",
+                                "https://creativecommons.org/licenses/by-ncsa/4.0"),
+                            "Creative Commons BY-NC-SA 4.0")),
+                    new XElement(TEI_NS + "date", DateTime.Now.Year),
+                    new XElement(TEI_NS + "pubPlace", "Graz")),
+                new XElement(TEI_NS + "sourceDesc",
+                    new XElement(TEI_NS + "p")))));
+    }
+
+    /// <summary>
+    /// Sets up <see cref="Output"/> and its document.
+    /// </summary>
+    /// <param name="doc">The document.</param>
+    /// <exception cref="ArgumentNullException">doc</exception>
+    protected void SetupOutput(XDocument doc)
+    {
+        if (doc is null) throw new ArgumentNullException(nameof(doc));
+
+        // ensure root TEI element exists
+        if (doc.Root == null) doc.Add(new XElement(TEI_NS + "TEI"));
+
+        // ensure teiHeader exists
+        if (doc.Root!.Element(TEI_NS + "teiHeader") == null)
+            AddHeader(doc.Root);
+
+        // ensure TEI/facsimile exists
+        XElement? facsimile = doc.Root.Element(TEI_NS + "facsimile");
+        if (facsimile == null)
+        {
+            facsimile = new(TEI_NS + "facsimile");
+            doc.Root!.Add(facsimile);
+        }
+        Output!.Data[M_FACS_KEY] = facsimile;
+
+        // ensure TEI/text exists
+        XElement? text = doc.Root.Element(TEI_NS + "text");
+        if (text == null)
+        {
+            text = new(TEI_NS + "text");
+            doc.Root.Add(text);
+        }
+
+        // ensure TEI/text/body exists
+        XElement? body = text.Element(TEI_NS + "body");
+        if (body == null)
+        {
+            body = new(TEI_NS + "body");
+            text.Add(body);
+        }
+        Output!.Data[M_BODY_KEY] = body;
+    }
+
     private static XElement BuildTextParagraphs(string text, XElement target)
     {
         foreach (string line in text.Split('\n'))
@@ -133,9 +230,15 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         }
 
         // body/pb n=ID source=item ID
-        body.Add(new XElement(TEI_NS + "pb",
-            new XAttribute("n", imageId),
-            new XAttribute("source", "#" + item.Id)));
+        XElement? pb = body.Elements(TEI_NS + "pb").FirstOrDefault(
+            e => e.Attribute("n")!.Value == imageId);
+        if (pb == null)
+        {
+            pb = new XElement(TEI_NS + "pb",
+                new XAttribute("n", imageId),
+                new XAttribute("source", "#" + item.Id));
+            body.Add(pb);
+        }
 
         // part's annotations (sorted by ID)
         var sortedAnnotations = from a in part.Annotations
@@ -160,14 +263,15 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             }
             SelectorXmlConverter.Convert(ann.Selector, zone);
 
-            // body/div according to type
+            // body/div according to type (after pb)
             string annIdRef = "#" + annId;
             XElement? div = body.Elements(TEI_NS + "div").FirstOrDefault(
                 e => e.Attribute("facs")!.Value == annIdRef);
             if (div == null)
             {
                 div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
-                body.Add(div);
+                pb.AddAfterSelf(div);
+                // body.Add(div)
             }
 
             switch (ann.Eid[0])

@@ -42,53 +42,6 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
         // not used
     }
 
-    private void AddHeader()
-    {
-        _doc!.Root!.Add(new XElement(TEI_NS + "teiHeader",
-            new XElement(TEI_NS + "fileDesc",
-                new XElement(TEI_NS + "titleStmt",
-                    new XElement(TEI_NS + "title", new XAttribute("type", "main"),
-                        "Compendium Historiae in genealogia Christi"),
-                    new XElement(TEI_NS + "title", new XAttribute("type", "sub"),
-                        "Electronic transcription of the manuscript " +
-                            CurrentGroupId),
-                    new XElement(TEI_NS + "author",
-                        "Petrus von Poitiers",
-                        new XElement(TEI_NS + "ex", "Petrus Pictaviensis")),
-                    new XElement(TEI_NS + "respStmt",
-                        new XElement(TEI_NS + "resp", "edited by"),
-                        new XElement(TEI_NS + "persName",
-                            new XAttribute("ref", "#")
-                    ))),
-                new XElement(TEI_NS + "publicationStmt",
-                    new XElement(TEI_NS + "publisher",
-                        new XElement(TEI_NS + "orgName",
-                            new XAttribute("corresp",
-                                "https://kunstgeschichte.unigraz.at"),
-                            "Institut für Kunstgeschichte, " +
-                            "Karl-Franzens-Universität Graz")),
-                    new XElement(TEI_NS + "authority",
-                        new XElement(TEI_NS + "orgName",
-                            new XAttribute("corresp",
-                                "https://informationsmodellierung.unigraz.at"),
-                            "Zentrum für Informationsmodellierung - Austrian " +
-                            "Centre for Digital Humanities, " +
-                            "Karl-Franzens-Universität Graz")),
-                    new XElement(TEI_NS + "distributor",
-                        new XElement(TEI_NS + "orgName",
-                            new XAttribute("ref", "https://gams.uni-graz.at"),
-                            "GAMS - Geisteswissenschaftliches Asset Management System")),
-                    new XElement(TEI_NS + "availability",
-                        new XElement(TEI_NS + "licence",
-                            new XAttribute("target",
-                                "https://creativecommons.org/licenses/by-ncsa/4.0"),
-                            "Creative Commons BY-NC-SA 4.0")),
-                    new XElement(TEI_NS + "date", DateTime.Now.Year),
-                    new XElement(TEI_NS + "pubPlace", "Graz")),
-                new XElement(TEI_NS + "sourceDesc",
-                    new XElement(TEI_NS + "p")))));
-    }
-
     private string GetTeiFilePath(string groupId) =>
         Path.Combine(_options!.OutputDirectory ?? "", groupId + ".xml");
 
@@ -104,38 +57,7 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
                 LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo)
             : new XDocument(new XElement(TEI_NS + "TEI"));
 
-        // ensure root TEI element exists
-        if (_doc.Root == null) _doc.Add(new XElement(TEI_NS + "TEI"));
-
-        // ensure teiHeader exists
-        if (_doc.Root!.Element(TEI_NS + "teiHeader") == null)
-            AddHeader();
-
-        // ensure TEI/facsimile exists
-        XElement? facsimile = _doc.Root.Element(TEI_NS + "facsimile");
-        if (facsimile == null)
-        {
-            facsimile = new(TEI_NS + "facsimile");
-            _doc.Root!.Add(facsimile);
-        }
-        Output!.Data[M_FACS_KEY] = facsimile;
-
-        // ensure TEI/text exists
-        XElement? text = _doc.Root.Element(TEI_NS + "text");
-        if (text == null)
-        {
-            text = new(TEI_NS + "text");
-            _doc.Root.Add(text);
-        }
-
-        // ensure TEI/text/body exists
-        XElement? body = text.Element(TEI_NS + "body");
-        if (body == null)
-        {
-            body = new(TEI_NS + "body");
-            text.Add(body);
-        }
-        Output!.Data[M_BODY_KEY] = body;
+        SetupOutput(_doc);
     }
 
     private void CloseDocument()

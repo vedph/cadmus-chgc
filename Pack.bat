@@ -11,4 +11,8 @@ cd .\Cadmus.Chgc.Services
 dotnet pack -c Debug -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 cd..
 
+cd .\Cadmus.Chgc.Export
+dotnet pack -c Debug -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+cd..
+
 pause
