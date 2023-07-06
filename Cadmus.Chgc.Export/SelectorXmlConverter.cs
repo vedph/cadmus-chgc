@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -18,8 +19,8 @@ public static class SelectorXmlConverter
         foreach (string pair in points.Split(' '))
         {
             string[] coords = pair.Split(',');
-            double x = double.Parse(coords[0]);
-            double y = double.Parse(coords[1]);
+            double x = double.Parse(coords[0], CultureInfo.InvariantCulture);
+            double y = double.Parse(coords[1], CultureInfo.InvariantCulture);
             if (x < minX) minX = x;
             if (y < minY) minY = y;
             if (x > maxX) maxX = x;
@@ -64,10 +65,10 @@ public static class SelectorXmlConverter
             string[] values = csv.Split(',');
             if (values.Length != 4)
                 throw new ArgumentException("Invalid selector: " + selector);
-            double x = double.Parse(values[0]);
-            double y = double.Parse(values[1]);
-            double w = double.Parse(values[2]);
-            double h = double.Parse(values[3]);
+            double x = double.Parse(values[0], CultureInfo.InvariantCulture);
+            double y = double.Parse(values[1], CultureInfo.InvariantCulture);
+            double w = double.Parse(values[2], CultureInfo.InvariantCulture);
+            double h = double.Parse(values[3], CultureInfo.InvariantCulture);
 
             target.SetAttributeValue("ulx", x);
             target.SetAttributeValue("uly", y);
@@ -97,11 +98,14 @@ public static class SelectorXmlConverter
             // </circle></svg>
             case "circle":
                 target.Add(new XComment(selector));
-                double r = double.Parse(shape.Attribute("r")!.Value!);
+                double r = double.Parse(shape.Attribute("r")!.Value!,
+                    CultureInfo.InvariantCulture);
                 (double x1, double y1, double x2, double y2) =
                     GetEllipseBoundingBox(
-                        double.Parse(shape.Attribute("cx")!.Value!),
-                        double.Parse(shape.Attribute("cy")!.Value!),
+                        double.Parse(shape.Attribute("cx")!.Value!,
+                            CultureInfo.InvariantCulture),
+                        double.Parse(shape.Attribute("cy")!.Value!,
+                            CultureInfo.InvariantCulture),
                         r, r);
                 AddBoundingBoxAttrs(x1, y1, x2, y2, target);
                 return;
@@ -112,10 +116,14 @@ public static class SelectorXmlConverter
             case "ellipse":
                 target.Add(new XComment(selector));
                 (x1, y1, x2, y2) = GetEllipseBoundingBox(
-                    double.Parse(shape.Attribute("cx")!.Value!),
-                    double.Parse(shape.Attribute("cy")!.Value!),
-                    double.Parse(shape.Attribute("rx")!.Value!),
-                    double.Parse(shape.Attribute("ry")!.Value!));
+                    double.Parse(shape.Attribute("cx")!.Value!,
+                        CultureInfo.InvariantCulture),
+                    double.Parse(shape.Attribute("cy")!.Value!,
+                        CultureInfo.InvariantCulture),
+                    double.Parse(shape.Attribute("rx")!.Value!,
+                        CultureInfo.InvariantCulture),
+                    double.Parse(shape.Attribute("ry")!.Value!,
+                        CultureInfo.InvariantCulture));
                 AddBoundingBoxAttrs(x1, y1, x2, y2, target);
                 break;
 

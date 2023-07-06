@@ -199,6 +199,10 @@ A sample output follows, from a couple of mock items where only the first one ha
 
 ## History
 
+### 1.1.4
+
+- 2023-07-06: fixed culture in numeric parsing for selectors.
+
 ### 1.1.3
 
 - 2023-07-01: added RAM-based item composer.
