@@ -314,7 +314,10 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             if (div == null)
             {
                 div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
-                pb.AddAfterSelf(div);
+                XElement? nextPb = pb.ElementsAfterSelf(TEI_NS + "pb")
+                    .FirstOrDefault();
+                if (nextPb != null) nextPb.AddBeforeSelf(div);
+                else pb.Parent!.Add(div);
             }
 
             switch (ann.Eid[0])

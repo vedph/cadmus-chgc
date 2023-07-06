@@ -190,16 +190,16 @@ A sample output follows, from a couple of mock items with a few rectangular and 
   <text>
     <body>
       <pb n="ms-a/12" source="#769bf935-ecb0-41bb-9382-25bb70fab616" />
-      <div source="#25246d44-57aa-43fe-8ea5-ca83bc19e7b8" type="node" corresp="#n-aaron" facs="#ms-a/12/n-aaron-02">
-        <label>Aaron</label>
-        <text>
-          <p>Second part</p>
-        </text>
-      </div>
       <div source="#e004151d-f147-4381-8944-0f20fa0c5b38" type="node" corresp="#n-aaron" facs="#ms-a/12/n-aaron-01">
         <label>Aaron</label>
         <text>
           <p>A note about Aaron.</p>
+        </text>
+      </div>
+      <div source="#25246d44-57aa-43fe-8ea5-ca83bc19e7b8" type="node" corresp="#n-aaron" facs="#ms-a/12/n-aaron-02">
+        <label>Aaron</label>
+        <text>
+          <p>Second part</p>
         </text>
       </div>
       <pb n="ms-a/19" source="#b9483486-4771-47da-a008-4d91505b565f" />
