@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using Cadmus.Chgc.Parts;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Cadmus.Chgc.Export;
 
@@ -36,6 +37,11 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// The TEI namespace.
     /// </summary>
     public static readonly XNamespace TEI_NS = "http://www.tei-c.org/ns/1.0";
+
+    /// <summary>
+    /// The SVG namespace.
+    /// </summary>
+    public static readonly XNamespace SVG_NS = "http://www.w3.org/2000/svg ";
 
     /// <summary>
     /// Gets the current group identifier.
@@ -194,6 +200,40 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     }
 
     /// <summary>
+    /// Builds the annotation IDs, adding numeric suffixes to distinguish
+    /// different zones targeting the same entity ID.
+    /// </summary>
+    /// <param name="imageId">The image identifier.</param>
+    /// <param name="annotations">The annotations.</param>
+    /// <returns>List of IDs, one per received annotation, in the same order.
+    /// It is assumed that the received annotations are already sorted by
+    /// the default unsuffixed ID.</returns>
+    private static IList<string> BuildAnnotationIds(string imageId,
+        IList<ChgcImageAnnotation> annotations)
+    {
+        List<string> ids = new(annotations.Count);
+        foreach (ChgcImageAnnotation ann in annotations)
+            ids.Add(imageId + "/" + ann.Eid);
+
+        int i = 0;
+        while (i < ids.Count - 1)
+        {
+            if (ids[i + 1] == ids[i])
+            {
+                string id = ids[i];
+                int j = i;
+                int n = 1;
+                while (j < ids.Count && ids[j] == id)
+                    ids[j++] += $"-{n++:00}";
+                i = j;
+            }
+            else i++;
+        }
+
+        return ids;
+    }
+
+    /// <summary>
     /// Does the composition for the specified item.
     /// </summary>
     /// <param name="item">The item.</param>
@@ -241,13 +281,17 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         }
 
         // part's annotations (sorted by ID)
-        var sortedAnnotations = from a in part.Annotations
-                         let annId = imageId + "/" + a.Eid
-                         orderby annId
-                         select a;
-        foreach (ChgcImageAnnotation ann in sortedAnnotations)
+        List<ChgcImageAnnotation> sortedAnnotations = (
+            from a in part.Annotations
+            let annId = imageId + "/" + a.Eid
+            orderby annId
+            select a).ToList();
+        IList<string> annIds = BuildAnnotationIds(imageId, sortedAnnotations);
+
+        for (int i = 0; i < sortedAnnotations.Count; i++)
         {
-            string annId = imageId + "/" + ann.Eid;
+            ChgcImageAnnotation ann = sortedAnnotations[i];
+            string annId = annIds[i];
             Logger?.LogInformation("Annotation {annId} {annEid} {annTarget}",
                 annId, ann.Eid, ann.Target);
 
@@ -271,7 +315,6 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             {
                 div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
                 pb.AddAfterSelf(div);
-                // body.Add(div)
             }
 
             switch (ann.Eid[0])

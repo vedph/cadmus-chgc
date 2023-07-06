@@ -97,7 +97,6 @@ public static class SelectorXmlConverter
             // <svg><circle cx=\"364.5\" cy=\"461\" r=\"141.2276530995258\">
             // </circle></svg>
             case "circle":
-                target.Add(new XComment(selector));
                 double r = double.Parse(shape.Attribute("r")!.Value!,
                     CultureInfo.InvariantCulture);
                 (double x1, double y1, double x2, double y2) =
@@ -108,13 +107,21 @@ public static class SelectorXmlConverter
                             CultureInfo.InvariantCulture),
                         r, r);
                 AddBoundingBoxAttrs(x1, y1, x2, y2, target);
+
+                // replace svg
+                target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
+                target.Add(
+                    new XElement(ChgcTeiItemComposer.SVG_NS + "svg",
+                        new XElement(ChgcTeiItemComposer.SVG_NS + "ellipse",
+                            new XAttribute("cx", shape.Attribute("cx")!.Value),
+                            new XAttribute("cy", shape.Attribute("cy")!.Value),
+                            new XAttribute("r", shape.Attribute("r")!.Value))));
                 return;
 
             // ellipse: e.g.
             // <svg><ellipse cx=\"115.5\" cy=\"506\" rx=\"37.5\" ry=\"72\">
             // </ellipse></svg>
             case "ellipse":
-                target.Add(new XComment(selector));
                 (x1, y1, x2, y2) = GetEllipseBoundingBox(
                     double.Parse(shape.Attribute("cx")!.Value!,
                         CultureInfo.InvariantCulture),
@@ -125,15 +132,28 @@ public static class SelectorXmlConverter
                     double.Parse(shape.Attribute("ry")!.Value!,
                         CultureInfo.InvariantCulture));
                 AddBoundingBoxAttrs(x1, y1, x2, y2, target);
+
+                // replace svg
+                target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
+                target.Add(
+                    new XElement(ChgcTeiItemComposer.SVG_NS + "svg",
+                        new XElement(ChgcTeiItemComposer.SVG_NS + "ellipse",
+                            new XAttribute("cx", shape.Attribute("cx")!.Value),
+                            new XAttribute("cy", shape.Attribute("cy")!.Value),
+                            new XAttribute("rx", shape.Attribute("rx")!.Value),
+                            new XAttribute("ry", shape.Attribute("ry")!.Value))));
                 break;
 
             // freehand: e.g.
             // <svg><path d=\"M381 44 L381 44 L381 45 L382 46 L382 47 L384 49...">
             // </path></svg>
             case "path":
-                target.Add(new XComment(selector));
-                // TODO eventually calculate bbox from path
-                // calculate bounding box from SVG path
+                // replace svg
+                target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
+                target.Add(
+                    new XElement(ChgcTeiItemComposer.SVG_NS + "svg",
+                        new XElement(ChgcTeiItemComposer.SVG_NS + "path",
+                            new XAttribute("d", selector))));
                 break;
         }
     }

@@ -107,15 +107,15 @@ This of course is a compromise, and may not be ideal should our IIIF source mani
       <note>{{ann-text}}</note>
   </div>
   <!-- text template: -->
-  <div type="text" corresp="{{WHERE-FROM??}}" facs="#{{annotation-id}}">
+  <div type="text" corresp="{{eid}}" facs="#{{annotation-id}}">
     <!-- as above -->
   </div>
   <!-- diagram template: -->
-  <div type="diagram" corresp="{{WHERE-FROM??}}" facs="#{{annotation-id}}">
+  <div type="diagram" corresp="{{eid}}" facs="#{{annotation-id}}">
     <!-- as above -->
   </div>
   <!-- picture template: -->
-  <div type="picture" corresp="{{WHERE-FROM??}}" facs="#{{annotation-id}}">
+  <div type="picture" corresp="{{eid}}" facs="#{{annotation-id}}">
     <!-- as above -->
   </div>
   <!-- group template: -->
@@ -123,7 +123,7 @@ This of course is a compromise, and may not be ideal should our IIIF source mani
     <!-- as above -->
   </div>
   <!-- connection template: -->
-  <div type="connection" corresp="{{WHERE-FROM??}}" facs="#{{annotation-id}}">
+  <div type="connection" corresp="{{eid}}" facs="#{{annotation-id}}">
     <!-- as above -->
   </div>
   <!-- end for each image -->
@@ -135,11 +135,9 @@ where:
 - `eid` is the entity ID (e.g. `n-abacuc`, etc.).
 - `annotation-id` is the annotation ID, as above.
 
-> ⚠️ `WHERE-FROM??` currently marks those template values which are not sure. For the moment I've just included `eid` here too.
-
 Also, I add a `source` attribute to each surface, zone, pb, and div elements, just to keep track of the original source of the data. You can get rid of it if you want.
 
-A sample output follows, from a couple of mock items where only the first one has two rectangular annotations:
+A sample output follows, from a couple of mock items with a few rectangular and circular annotations:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -177,27 +175,50 @@ A sample output follows, from a couple of mock items where only the first one ha
     </fileDesc>
   </teiHeader>
   <facsimile>
-    <surface n="ms-a/7" source="#f134aaf2-fe44-4057-8723-0d94f7068fdd">
-      <zone xml:id="ms-a/7/n-aaron" source="#4a706b03-b651-4a89-b4a4-b2b61b85b863" ulx="456" uly="100" lrx="698" lry="337" />
-      <zone xml:id="ms-a/7/n-abacuc" source="#4325e8eb-40c7-4dc9-a891-f7f27510cef3" ulx="220" uly="786" lrx="418" lry="934" />
+    <surface n="ms-a/12" source="#769bf935-ecb0-41bb-9382-25bb70fab616">
+      <zone xml:id="ms-a/12/n-aaron-01" source="#e004151d-f147-4381-8944-0f20fa0c5b38" ulx="416" uly="213" lrx="632" lry="358" />
+      <zone xml:id="ms-a/12/n-aaron-02" source="#25246d44-57aa-43fe-8ea5-ca83bc19e7b8" ulx="652" uly="386" lrx="877" lry="553" />
+    </surface>
+    <surface n="ms-a/19" source="#b9483486-4771-47da-a008-4d91505b565f">
+      <zone xml:id="ms-a/19/n-baruch" source="#163788df-998d-44ba-aa58-96a390f46711" ulx="221.86790366824798" uly="93.86790366824798" lrx="290.132096331752" lry="162.13209633175202">
+        <svg xmlns="http://www.w3.org/2000/svg ">
+          <ellipse cx="256" cy="128" r="34.132096331752024" />
+        </svg>
+      </zone>
     </surface>
   </facsimile>
   <text>
     <body>
-      <pb n="ms-a/7" source="#f134aaf2-fe44-4057-8723-0d94f7068fdd" />
-      <div source="#4a706b03-b651-4a89-b4a4-b2b61b85b863" type="node" corresp="#n-aaron" facs="#ms-a/7/n-aaron">
+      <pb n="ms-a/12" source="#769bf935-ecb0-41bb-9382-25bb70fab616" />
+      <div source="#25246d44-57aa-43fe-8ea5-ca83bc19e7b8" type="node" corresp="#n-aaron" facs="#ms-a/12/n-aaron-02">
         <label>Aaron</label>
         <text>
-          <p>A note about Aaron</p>
+          <p>Second part</p>
         </text>
       </div>
-      <div source="#4325e8eb-40c7-4dc9-a891-f7f27510cef3" type="node" corresp="#n-abacuc" facs="#ms-a/7/n-abacuc" />
+      <div source="#e004151d-f147-4381-8944-0f20fa0c5b38" type="node" corresp="#n-aaron" facs="#ms-a/12/n-aaron-01">
+        <label>Aaron</label>
+        <text>
+          <p>A note about Aaron.</p>
+        </text>
+      </div>
+      <pb n="ms-a/19" source="#b9483486-4771-47da-a008-4d91505b565f" />
+      <div source="#163788df-998d-44ba-aa58-96a390f46711" type="node" corresp="#n-baruch" facs="#ms-a/19/n-baruch">
+        <label>Baruch</label>
+        <text>
+          <p>A note about Baruch.</p>
+        </text>
+      </div>
     </body>
   </text>
 </TEI>
 ```
 
 ## History
+
+- 2023-07-06:
+  - added svg child element to zone.
+  - added numeric suffixes to image identifiers with the same entity ID.
 
 ### 1.1.4
 

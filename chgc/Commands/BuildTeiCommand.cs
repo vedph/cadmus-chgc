@@ -51,6 +51,8 @@ internal sealed class BuildTeiCommand : AsyncCommand<BuildTeiCommandOptions>
             {
                 OutputDirectory = settings.OutputDirectory
             });
+            if (!Directory.Exists(settings.OutputDirectory))
+                Directory.CreateDirectory(settings.OutputDirectory);
 
             composer.Open();
             foreach (string id in collector.GetIds())
