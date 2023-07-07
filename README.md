@@ -216,6 +216,8 @@ A sample output follows, from a couple of mock items with a few rectangular and 
 
 ## History
 
+### 1.1.5
+
 - 2023-07-07: sorted insert.
 - 2023-07-06:
   - added svg child element to zone.
