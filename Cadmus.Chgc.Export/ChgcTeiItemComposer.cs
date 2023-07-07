@@ -233,6 +233,24 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         return ids;
     }
 
+    public static void InsertInOrder(XElement parent, XElement element,
+        XName attrName)
+    {
+        // insert element in the correct position as child of parent
+        // sorted by attribute n
+        string n = element.Attribute(attrName)?.Value ?? "";
+        foreach (XElement child in parent.Elements(element.Name))
+        {
+            string childN = child.Attribute(attrName)?.Value ?? "";
+            if (string.CompareOrdinal(n, childN) < 0)
+            {
+                child.AddBeforeSelf(element);
+                return;
+            }
+        }
+        parent.Add(element);
+    }
+
     /// <summary>
     /// Does the composition for the specified item.
     /// </summary>
@@ -266,7 +284,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             surface = new(TEI_NS + "surface",
                 new XAttribute("n", imageId),
                 new XAttribute("source", "#" + item.Id));
-            facs.Add(surface);
+            InsertInOrder(facs, surface, "n");
         }
 
         // body/pb n=ID source=item ID
@@ -277,7 +295,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             pb = new XElement(TEI_NS + "pb",
                 new XAttribute("n", imageId),
                 new XAttribute("source", "#" + item.Id));
-            body.Add(pb);
+            InsertInOrder(body, pb, "n");
         }
 
         // part's annotations (sorted by ID)
@@ -303,7 +321,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
                 zone = new(TEI_NS + "zone",
                     new XAttribute(XML_NS + "id", annId),
                     new XAttribute("source", ann.Id));
-                surface.Add(zone);
+                InsertInOrder(surface, zone, XML_NS + "id");
             }
             SelectorXmlConverter.Convert(ann.Selector, zone);
 

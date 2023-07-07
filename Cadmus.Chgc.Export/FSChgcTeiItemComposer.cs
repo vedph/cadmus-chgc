@@ -53,8 +53,7 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
         Logger?.LogInformation("Opening document for {groupId}", CurrentGroupId);
         string path = GetTeiFilePath(CurrentGroupId);
         _doc = File.Exists(path)
-            ? XDocument.Load(path,
-                LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo)
+            ? XDocument.Load(path)
             : new XDocument(new XElement(TEI_NS + "TEI"));
 
         SetupOutput(_doc);
