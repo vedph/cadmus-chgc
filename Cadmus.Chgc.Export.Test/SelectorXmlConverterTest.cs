@@ -55,9 +55,8 @@ public class SelectorXmlConverterTest
         Assert.Equal("110", zone.Attribute("lrx")?.Value);
         Assert.Equal("60", zone.Attribute("lry")?.Value);
 
-        // comment
-        Assert.Single(zone.Nodes());
-        Assert.Equal($"<!--{selector}-->", zone.Nodes().First().ToString());
+        // svg
+        Assert.NotNull(zone.Element(ChgcTeiItemComposer.SVG_NS + "svg"));
     }
 
     [Fact]
@@ -77,8 +76,7 @@ public class SelectorXmlConverterTest
         Assert.Equal("110", zone.Attribute("lrx")?.Value);
         Assert.Equal("55", zone.Attribute("lry")?.Value);
 
-        // comment
-        Assert.Single(zone.Nodes());
-        Assert.Equal($"<!--{selector}-->", zone.Nodes().First().ToString());
+        // svg
+        Assert.NotNull(zone.Element(ChgcTeiItemComposer.SVG_NS + "svg"));
     }
 }

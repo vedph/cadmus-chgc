@@ -216,6 +216,7 @@ A sample output follows, from a couple of mock items with a few rectangular and 
 
 ## History
 
+- 2023-07-07: sorted insert.
 - 2023-07-06:
   - added svg child element to zone.
   - added numeric suffixes to image identifiers with the same entity ID.

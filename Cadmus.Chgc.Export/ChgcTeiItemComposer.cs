@@ -233,22 +233,46 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         return ids;
     }
 
+    /// <summary>
+    /// Inserts the specified element in order among the child elements of
+    /// element parent.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    /// <param name="element">The element.</param>
+    /// <param name="attrName">Name of the attribute to use as sort key.</param>
+    /// <param name="childA">The optional child element before which the element
+    /// cannot be inserted.</param>
+    /// <param name="childB">The optional child element after which the element
+    /// cannot be inserted.</param>
+    /// <exception cref="ArgumentNullException">parent or element or attrName
+    /// </exception>
     public static void InsertInOrder(XElement parent, XElement element,
-        XName attrName)
+        XName attrName, XElement? childA = null, XElement? childB = null)
     {
-        // insert element in the correct position as child of parent
-        // sorted by attribute n
-        string n = element.Attribute(attrName)?.Value ?? "";
+        if (parent is null) throw new ArgumentNullException(nameof(parent));
+        if (element is null) throw new ArgumentNullException(nameof(element));
+        if (attrName is null) throw new ArgumentNullException(nameof(attrName));
+
+        string newA = element.Attribute(attrName)?.Value ?? "";
+
         foreach (XElement child in parent.Elements(element.Name))
         {
-            string childN = child.Attribute(attrName)?.Value ?? "";
-            if (string.CompareOrdinal(n, childN) < 0)
+            // must be after A
+            if (childA != null && !child.ElementsBeforeSelf().Contains(childA))
+                continue;
+            // must be before B
+            if (childB != null && !child.ElementsAfterSelf().Contains(childB))
+                break;
+
+            string a = child.Attribute(attrName)?.Value ?? "";
+            if (string.CompareOrdinal(newA, a) < 0)
             {
                 child.AddBeforeSelf(element);
                 return;
             }
         }
-        parent.Add(element);
+        if (childB != null) childB.AddBeforeSelf(element);
+        else parent.Add(element);
     }
 
     /// <summary>
@@ -334,8 +358,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
                 div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
                 XElement? nextPb = pb.ElementsAfterSelf(TEI_NS + "pb")
                     .FirstOrDefault();
-                if (nextPb != null) nextPb.AddBeforeSelf(div);
-                else pb.Parent!.Add(div);
+                InsertInOrder(body, div, "facs", pb, nextPb);
             }
 
             switch (ann.Eid[0])
