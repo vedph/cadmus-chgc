@@ -19,8 +19,6 @@ ID: `it.vedph.chgc.image-annotations`
     - title\* (`string`)
     - description (`string`)
   - selector\* (`string`)
-  - notes (`string[]`): optional notes in the annotation.
-  - tags (`string[]`): optional tags in the annotation.
   - eid\* (`string`, thesaurus `chgc-ids`): the CHGC ID.
   - label (`string`)
   - note (`string`)
@@ -215,6 +213,8 @@ A sample output follows, from a couple of mock items with a few rectangular and 
 ```
 
 ## History
+
+- 2023-07-14: breaking changes: refactored imaging parts. This just implies that now the CHGC image annotation model no more has the (unused but previously inherited) `Notes` and `Tags` properties.
 
 ### 1.1.5
 

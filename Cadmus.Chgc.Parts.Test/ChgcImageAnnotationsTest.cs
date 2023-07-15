@@ -23,8 +23,6 @@ public sealed class ChgcImageAnnotationsPartTest
         {
             Target = new GalleryImage { Uri = "https://some-image.jpg" },
             Selector = "some-selector",
-            Notes = new List<string> { "note 1", "note 2" },
-            Tags = new List<string> { "tag" },
             Eid = "n_alpha",
         });
         return part;
@@ -64,7 +62,6 @@ public sealed class ChgcImageAnnotationsPartTest
             {
                 Id = $"#a{n}",
                 Eid = $"#a{n}",
-                Tags = new List<string> { $"eid_img-anno-{n}" },
                 Target = new GalleryImage
                 {
                     Id = $"#i{n}"
