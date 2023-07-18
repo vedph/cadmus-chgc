@@ -4,6 +4,7 @@ using Cadmus.Core.Storage;
 using Cadmus.Img.Parts;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Cadmus.Chgc.Import;
@@ -15,6 +16,8 @@ namespace Cadmus.Chgc.Import;
 /// </summary>
 public class ChgcItemImporter
 {
+    private const string FACET_ID = "default";
+
     /// <summary>
     /// The XML namespace.
     /// </summary>
@@ -26,6 +29,14 @@ public class ChgcItemImporter
     public static readonly XNamespace TEI_NS = "http://www.tei-c.org/ns/1.0";
 
     private readonly ICadmusRepository _repository;
+
+    /// <summary>
+    /// Gets or sets the regular expression pattern to use to shorten the URI
+    /// for using it in the imported item's description. If not specified,
+    /// the URI will be copied as is; else, it will be shortened by replacing
+    /// it with the first group of the match.
+    /// </summary>
+    public Regex? UriShortenerPattern { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ChgcItemImporter"/> class.
@@ -56,9 +67,9 @@ public class ChgcItemImporter
         XElement? facsimile = doc.Root?.Element(TEI_NS + "facsimile");
         if (facsimile == null) return 0;
 
-        ItemFilter filter = new ItemFilter
+        ItemFilter filter = new()
         {
-            FacetId = "image",
+            FacetId = FACET_ID,
             GroupId = groupId,
         };
 
@@ -73,12 +84,16 @@ public class ChgcItemImporter
                 throw new InvalidOperationException(
                     $"Missing facs URI in surface {n}");
 
+            string shortenedUri = UriShortenerPattern == null
+                ? uri
+                : UriShortenerPattern.Replace(uri, "$1");
+
             IItem item = new Item
             {
-                FacetId = "image",
+                FacetId = FACET_ID,
                 GroupId = groupId,
                 Title = $"{groupId} {n:000} {page}",
-                Description = $"{page}: {uri}",
+                Description = $"{page}: {shortenedUri}".TrimEnd(),
                 Flags = 1,  // = imported
                 CreatorId = "zeus",
                 UserId = "zeus",
