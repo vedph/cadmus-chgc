@@ -272,6 +272,8 @@ Example `facsimile` element:
 
 ## History
 
+### 2.0.3
+
 - 2023-07-18:
   - added `image` to CHGC image annotations part.
   - added importer.
