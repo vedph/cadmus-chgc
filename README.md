@@ -212,8 +212,60 @@ A sample output follows, from a couple of mock items with a few rectangular and 
 </TEI>
 ```
 
+### Import TEI Command
+
+🎯 Import TEI documents into a CHGC database, where each document contains a `TEI/facsimile` element including as many `surface` elements as the pages to import. This is used to create in advance the items representing all the pages of a given manuscript, each TEI document corresponding to a single manuscript.
+
+It is assumed that the TEI file name is equal to the manuscript ID; this will become the group ID of the imported items.
+
+For each `surface` element, an item will be created with these data:
+
+- facet ID = "image";
+- group ID = the TEI file name (without extension);
+- title = group ID + page ordinal number + `@n` attribute value";
+- description = `@n` attribute value: image uri;
+- flags = 1 (=imported);
+- creator ID and user ID = `zeus`;
+- an empty CHGC image annotations part with the corresponding target image.
+
+Syntax:
+
+```ps1
+./chgc import-tei <InputFileMask> [-d <DatabaseName>]
+```
+
+- `-d` (or `--database`): the target database name (default = `cadmus-chgc`).
+
+Example:
+
+```ps1
+./chgc import-tei c:/users/dfusi/desktop/ccc-ms029.xml
+```
+
+Example `facsimile` element:
+
+```xml
+<facsimile>
+  <surface n="6r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/full/0/default.jpg"> 
+  </surface>
+  <surface n="6v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_V_TC_46/full/full/0/default.jpg"/>
+  <surface n="7r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_R_TC_46/full/full/0/default.jpg"/>
+  <surface n="7v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_V_TC_46/full/full/0/default.jpg"/>
+  <surface n="8r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_R_TC_46/full/full/0/default.jpg"/>
+  <surface n="8v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_V_TC_46/full/full/0/default.jpg"/>
+  <surface n="9r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_R_TC_46/full/full/0/default.jpg"/>
+  <surface n="9v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_V_TC_46/full/full/0/default.jpg"/>
+  <surface n="10r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_R_TC_46/full/full/0/default.jpg"/>
+  <surface n="10v" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_V_TC_46/full/full/0/default.jpg"/>
+  <surface n="11r" facs="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_xi_R_TC_46/full/full/0/default.jpg"/>
+</facsimile>
+```
+
 ## History
 
+- 2023-07-18:
+  - added `image` to CHGC image annotations part.
+  - added importer.
 - 2023-07-14: breaking changes: refactored imaging parts. This just implies that now the CHGC image annotation model no more has the (unused but previously inherited) `Notes` and `Tags` properties.
 
 ### 1.1.5

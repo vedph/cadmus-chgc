@@ -1,4 +1,5 @@
 ﻿using Cadmus.Core;
+using Cadmus.Img.Parts;
 using Fusi.Tools.Configuration;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +14,14 @@ namespace Cadmus.Chgc.Parts;
 [Tag("it.vedph.chgc.image-annotations")]
 public sealed class ChgcImageAnnotationsPart : PartBase
 {
+    /// <summary>
+    /// Gets or sets the target image for the annotations. This is repeated
+    /// in each of the annotations, but it is useful to have it here too,
+    /// for the cases where no annotation exists but the image has been
+    /// selected.
+    /// </summary>
+    public GalleryImage? Image { get; set; }
+
     /// <summary>
     /// Gets or sets the annotations.
     /// </summary>

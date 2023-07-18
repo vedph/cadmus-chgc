@@ -9,7 +9,7 @@
 		<Authors>Daniele Fusi</Authors>
 		<Company>Fusi</Company>
 		<Product>Cadmus</Product>
-		<Description>CHGC data export components for Cadmus.</Description>
+		<Description>CHGC data import components for Cadmus.</Description>
 		<Copyright>by Daniele Fusi 2023</Copyright>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
@@ -20,12 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Cadmus.Export" Version="3.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Cadmus.Chgc.Parts\Cadmus.Chgc.Parts.csproj" />
+	  <ProjectReference Include="..\Cadmus.Chgc.Parts\Cadmus.Chgc.Parts.csproj" />
 	</ItemGroup>
 
 </Project>
