@@ -231,16 +231,25 @@ For each `surface` element, an item will be created with these data:
 Syntax:
 
 ```ps1
-./chgc import-tei <InputFileMask> [-d <DatabaseName>]
+./chgc import-tei <InputFileMask> [-d <DatabaseName>] [-p <UriShortenerPattern>]
 ```
 
-- `-d` (or `--database`): the target database name (default = `cadmus-chgc`).
+- `-d` (or `--database`): the target database name (default = `cadmus-chgc`);
+- `-p` (or `--pattern`): the regular expression pattern to use to shorten the URI for using it in the imported item's description. If not specified, the URI will be copied as is; else, it will be shortened by replacing it with the _first group_ of the match.
 
 Example:
 
 ```ps1
-./chgc import-tei c:/users/dfusi/desktop/ccc-ms029.xml
+./chgc import-tei c:/users/dfusi/desktop/ccc-ms029.xml -p "^https:\/\/stacks\.stanford\.edu\/image\/iiif\/xj710dc7305\/([^\/]+).+"
 ```
+
+In this example, the pattern is designed for URIs like this:
+
+```txt
+https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/default.jpg
+```
+
+In this case, the first group of the match will be `029_vi_R_TC_46`, which will be used as the shortened URI.
 
 Example `facsimile` element:
 

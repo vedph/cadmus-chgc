@@ -2,6 +2,7 @@
 using Cadmus.Core;
 using Cadmus.Core.Storage;
 using Cadmus.Img.Parts;
+using Cadmus.Index;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -29,6 +30,7 @@ public class ChgcItemImporter
     public static readonly XNamespace TEI_NS = "http://www.tei-c.org/ns/1.0";
 
     private readonly ICadmusRepository _repository;
+    private readonly IItemIndexWriter? _indexWriter;
 
     /// <summary>
     /// Gets or sets the regular expression pattern to use to shorten the URI
@@ -42,11 +44,14 @@ public class ChgcItemImporter
     /// Initializes a new instance of the <see cref="ChgcItemImporter"/> class.
     /// </summary>
     /// <param name="repository">The repository for the target database.</param>
+    /// <param name="indexWriter">The optional index writer.</param>
     /// <exception cref="ArgumentNullException">repository</exception>
-    public ChgcItemImporter(ICadmusRepository repository)
+    public ChgcItemImporter(ICadmusRepository repository,
+        IItemIndexWriter? indexWriter)
     {
         _repository = repository ??
             throw new ArgumentNullException(nameof(repository));
+        _indexWriter = indexWriter;
     }
 
     /// <summary>
@@ -120,6 +125,14 @@ public class ChgcItemImporter
 
                 _repository.AddItem(item);
                 _repository.AddPart(part);
+
+                // index if any
+                if (_indexWriter != null)
+                {
+                    _indexWriter.WriteItem(item);
+                    _indexWriter.WritePart(item, part);
+                }
+
                 added++;
             }
         }

@@ -56,7 +56,7 @@ public static class Program
             {
                 config.AddCommand<BuildTeiCommand>("build-tei")
                     .WithDescription("Build TEI document(s) from Cadmus database.");
-                config.AddCommand<BuildTeiCommand>("import-tei")
+                config.AddCommand<ImportTeiCommand>("import-tei")
                     .WithDescription("Import TEI document(s) representing pages " +
                     "into Cadmus database.");
             });

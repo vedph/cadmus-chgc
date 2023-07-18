@@ -2,7 +2,7 @@
   "profiles": {
     "chgc": {
       "commandName": "Project",
-      "commandLineArgs": "build-tei c:\\users\\dfusi\\desktop\\out -g ms-a"
+      "commandLineArgs": "import-tei c:\\users\\dfusi\\desktop\\ccc-ms029.xml"
     }
   }
 }
