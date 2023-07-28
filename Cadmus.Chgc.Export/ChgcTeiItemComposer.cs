@@ -400,7 +400,10 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             SelectorXmlConverter.Convert(ann.Selector, zone);
 
             // (c2) body/div according to type (after pb)
+            bool divPending = false;
+            XElement? nextPb = null;
             XElement? div;
+
             if (prevDiv != null &&
                 TextContainsUnsuffixedId(prevDiv.Attribute("facs")!.Value, ann.Id))
             {
@@ -413,10 +416,10 @@ public abstract class ChgcTeiItemComposer : ItemComposer
                     e => TextContainsId(e.Attribute("facs")!.Value, ann.Id));
                 if (div == null)
                 {
-                    div = new(TEI_NS + "div", new XAttribute(XML_NS + "id", ann.Id));
-                    XElement? nextPb = pb.ElementsAfterSelf(TEI_NS + "pb")
-                        .FirstOrDefault();
-                    InsertInOrder(body, div, "facs", pb, nextPb);
+                    div = new(TEI_NS + "div",
+                        new XAttribute(XML_NS + "id", ann.Id));
+                    nextPb = pb.ElementsAfterSelf(TEI_NS + "pb").FirstOrDefault();
+                    divPending = true;
                 }
             }
             prevDiv = div;
@@ -452,6 +455,8 @@ public abstract class ChgcTeiItemComposer : ItemComposer
                         ann.Eid);
                     break;
             }
+
+            if (divPending) InsertInOrder(body, div, "corresp", pb, nextPb);
         }
     }
 }

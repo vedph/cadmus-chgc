@@ -158,22 +158,11 @@ public sealed class ChgcTeiItemComposerTest
             pb.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1", pb.Attribute("n")?.Value);
 
-        // body/div (abacuc)
+        // body/first div (aaron)
         XElement? div = doc.Root!.Element(ChgcTeiItemComposer.TEI_NS + "text")!
             .Element(ChgcTeiItemComposer.TEI_NS + "body")!
-            .Element(ChgcTeiItemComposer.TEI_NS + "div");
-        Assert.NotNull(div);
-        Assert.Equal(part.Annotations[1].Id, 
-            div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
-        Assert.Equal("node", div.Attribute("type")?.Value);
-        Assert.Equal("#" + part.Annotations[1].Eid,
-            div.Attribute("corresp")?.Value);
-        Assert.Equal("#ccc-ms029/1/n-abacuc", div.Attribute("facs")?.Value);
-
-        // body/second div (aaron)
-        div = doc.Root!.Element(ChgcTeiItemComposer.TEI_NS + "text")!
-            .Element(ChgcTeiItemComposer.TEI_NS + "body")!
-            .Elements(ChgcTeiItemComposer.TEI_NS + "div").Last();
+            .Elements(ChgcTeiItemComposer.TEI_NS + "div")
+            .FirstOrDefault();
         Assert.NotNull(div);
         Assert.Equal(part.Annotations[0].Id,
             div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
@@ -181,6 +170,19 @@ public sealed class ChgcTeiItemComposerTest
         Assert.Equal("#" + part.Annotations[0].Eid,
             div.Attribute("corresp")?.Value);
         Assert.Equal("#ccc-ms029/1/n-aaron", div.Attribute("facs")?.Value);
+
+        // body/second div (abacuc)
+        div = doc.Root!.Element(ChgcTeiItemComposer.TEI_NS + "text")!
+            .Element(ChgcTeiItemComposer.TEI_NS + "body")!
+            .Elements(ChgcTeiItemComposer.TEI_NS + "div")
+            .LastOrDefault();
+        Assert.NotNull(div);
+        Assert.Equal(part.Annotations[1].Id, 
+            div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("node", div.Attribute("type")?.Value);
+        Assert.Equal("#" + part.Annotations[1].Eid,
+            div.Attribute("corresp")?.Value);
+        Assert.Equal("#ccc-ms029/1/n-abacuc", div.Attribute("facs")?.Value);
     }
 
     [Fact]
