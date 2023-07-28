@@ -363,7 +363,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
 
         // reuse surface if exists, else create it
         XElement? surface = facs.Elements(TEI_NS + "surface").FirstOrDefault(
-            e => e.Attribute("id")!.Value == itemId);
+            e => e.Attribute(XML_NS + "id")!.Value == itemId);
         if (surface == null)
         {
             surface = new(TEI_NS + "surface",

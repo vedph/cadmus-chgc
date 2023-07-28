@@ -272,6 +272,8 @@ Example `facsimile` element:
 
 ## History
 
+### 2.1.0
+
 - 2023-07-28: refactoring XML output schema.
 
 ### 2.0.3
