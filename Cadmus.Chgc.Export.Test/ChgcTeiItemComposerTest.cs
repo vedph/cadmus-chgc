@@ -186,6 +186,106 @@ public sealed class ChgcTeiItemComposerTest
     }
 
     [Fact]
+    public void Compose_Create_SinglePageSharedEntity()
+    {
+        IItem item = GetMockItem();
+        ChgcImageAnnotationsPart part = (ChgcImageAnnotationsPart)item.Parts[0];
+
+        // rect with n-aaron
+        part.Annotations.Add(new ChgcImageAnnotation
+        {
+            Id = "#36c9730c-a7c9-4a28-8889-8d6015ee14fe",
+            Eid = "n-aaron",
+            Label = "Aaron",
+            Note = "A note about Aaron",
+            Target = part.Image,
+            Selector = "xywh=pixel:100,50,130,70"
+        });
+
+        // circle with n-abacuc
+        part.Annotations.Add(new ChgcImageAnnotation
+        {
+            Id = "#af35f367-a921-4af3-bb84-4911cbc82a53",
+            Eid = "n-abacuc",
+            Label = "Abacuc",
+            Target = part.Image,
+            Selector = "<svg><circle cx=\"400\" cy=\"200\" r=\"50\"></circle></svg>"
+        });
+
+        // rect with n-aaron
+        part.Annotations.Add(new ChgcImageAnnotation
+        {
+            Id = "#faec7d03-8010-407f-8689-a38cf35505ab",
+            Eid = "n-aaron",
+            Label = "Aaron",
+            Target = part.Image,
+            Selector = "xywh=pixel:300,100,320,120"
+        });
+
+        RamChgcTeiItemComposer composer = new();
+        DocItemComposition output = new();
+        composer.Open(output);
+        composer.Compose(item);
+        composer.Close();
+
+        Assert.NotNull(output.Document);
+        XDocument doc = output.Document;
+        AssertTeiSkeleton(doc);
+
+        // tei/facsimile
+        XElement? facsimile = doc.Root!.Element(
+            ChgcTeiItemComposer.TEI_NS + "facsimile");
+        Assert.NotNull(facsimile);
+
+        // facsimile/surface
+        Assert.Single(facsimile.Elements());
+        XElement? surface = facsimile!.Element(
+            ChgcTeiItemComposer.TEI_NS + "surface");
+        Assert.NotNull(surface);
+        Assert.Equal("#" + item.Id, surface!
+            .Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("ccc-ms029/1", surface!.Attribute("n")?.Value);
+        Assert.Equal(part.Image!.Uri, surface!.Attribute("source")?.Value);
+
+        // surface has 3 zones
+        Assert.Equal(3, surface!.Elements().Count());
+        string[] zoneNrs = surface!.Elements()
+            .Select(z => z.Attribute("n")!.Value)
+            .ToArray();
+        Assert.Equal("ccc-ms029/1/n-aaron-01", zoneNrs[0]);
+        Assert.Equal("ccc-ms029/1/n-aaron-02", zoneNrs[1]);
+        Assert.Equal("ccc-ms029/1/n-abacuc", zoneNrs[2]);
+
+        // body has 2 divs
+        XElement? body = doc.Root!.Element(ChgcTeiItemComposer.TEI_NS + "text")!
+            .Element(ChgcTeiItemComposer.TEI_NS + "body");
+        Assert.NotNull(body);
+        Assert.Equal(2, body!.Elements(ChgcTeiItemComposer.TEI_NS + "div").Count());
+
+        // div 1
+        XElement? div = body!.Elements(ChgcTeiItemComposer.TEI_NS + "div")
+            .FirstOrDefault();
+        Assert.NotNull(div);
+        Assert.Equal($"{part.Annotations[0].Id} {part.Annotations[2].Id}",
+            div!.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("node", div!.Attribute("type")?.Value);
+        Assert.Equal("#n-aaron", div!.Attribute("corresp")?.Value);
+        Assert.Equal("#ccc-ms029/1/n-aaron-01 #ccc-ms029/1/n-aaron-02",
+            div!.Attribute("facs")?.Value);
+
+        // div 2
+        div = body!.Elements(ChgcTeiItemComposer.TEI_NS + "div")
+            .LastOrDefault();
+        Assert.NotNull(div);
+        Assert.Equal(part.Annotations[1].Id, 
+            div!.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("node", div!.Attribute("type")?.Value);
+        Assert.Equal("#" + part.Annotations[1].Eid,
+            div!.Attribute("corresp")?.Value);
+        Assert.Equal("#ccc-ms029/1/n-abacuc", div!.Attribute("facs")?.Value);
+    }
+
+    [Fact]
     public void InsertInOrder_NoChildren_Added()
     {
         XElement parent = new("parent");

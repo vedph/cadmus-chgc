@@ -190,12 +190,37 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         else note?.Remove();
     }
 
-    private static void BuildBodyEntryOutput(string annId, string type,
-        ChgcImageAnnotation ann, XElement target)
+    private static void AppendAttributeId(XElement target, XName attrName,
+        string attrValue)
+    {
+        XAttribute? a = target.Attribute(attrName);
+        if (a != null)
+        {
+            HashSet<string> ids = new(a.Value.Split((char[]?)null,
+                StringSplitOptions.RemoveEmptyEntries))
+            {
+                attrValue
+            };
+            target.SetAttributeValue(attrName,
+                string.Join(" ", ids.OrderBy(s => s)));
+        }
+        else target.SetAttributeValue(attrName, attrValue);
+    }
+
+    private static void BuildBodyEntryOutput(string id,
+        string annId, string type, ChgcImageAnnotation ann, XElement target,
+        bool append = false)
     {
         target.SetAttributeValue("type", type);
-        target.SetAttributeValue("corresp", $"#{ann.Eid}");
-        target.SetAttributeValue("facs", $"#{annId}");
+
+        if (append) AppendAttributeId(target, XML_NS + "id", id);
+        else target.SetAttributeValue(XML_NS + "id", id);
+
+        if (append) AppendAttributeId(target, "corresp", $"#{ann.Eid}");
+        else target.SetAttributeValue("corresp", $"#{ann.Eid}");
+
+        if (append) AppendAttributeId(target, "facs", $"#{annId}");
+        else target.SetAttributeValue("facs", $"#{annId}");
 
         BuildLabelAndText(ann, target);
     }
@@ -401,19 +426,22 @@ public abstract class ChgcTeiItemComposer : ItemComposer
 
             // (c2) body/div according to type (after pb)
             bool divPending = false;
+            bool divMerged = false;
             XElement? nextPb = null;
             XElement? div;
 
-            if (prevDiv != null &&
-                TextContainsUnsuffixedId(prevDiv.Attribute("facs")!.Value, ann.Id))
+            // if there is a previous div and it contains an ID equal to annId
+            // except for their suffixes, reuse it adding the IDs to its attrs
+            if (prevDiv != null && TextContainsUnsuffixedId(
+                prevDiv.Attribute("facs")!.Value, "#" + annId))
             {
                 div = prevDiv;
-                div.Attribute("facs")!.Value += $" {ann.Id}";
+                divMerged = true;
             }
             else
             {
                 div = body.Elements(TEI_NS + "div").FirstOrDefault(
-                    e => TextContainsId(e.Attribute("facs")!.Value, ann.Id));
+                    e => TextContainsId(e.Attribute(XML_NS + "id")!.Value, ann.Id));
                 if (div == null)
                 {
                     div = new(TEI_NS + "div",
@@ -428,27 +456,33 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             {
                 case 'n':
                     // node
-                    BuildBodyEntryOutput(annId, "node", ann, div);
+                    BuildBodyEntryOutput(ann.Id, annId, "node", ann, div,
+                        divMerged);
                     break;
                 case 't':
                     // text
-                    BuildBodyEntryOutput(annId, "text", ann, div);
+                    BuildBodyEntryOutput(ann.Id, annId, "text", ann, div,
+                        divMerged);
                     break;
                 case 'd':
                     // diagram
-                    BuildBodyEntryOutput(annId, "diagram", ann, div);
+                    BuildBodyEntryOutput(ann.Id, annId, "diagram", ann, div,
+                        divMerged);
                     break;
                 case 'p':
                     // picture
-                    BuildBodyEntryOutput(annId, "picture", ann, div);
+                    BuildBodyEntryOutput(ann.Id, annId, "picture", ann, div,
+                        divMerged);
                     break;
                 case 'g':
                     // group
-                    BuildBodyEntryOutput(annId, "group", ann, div);
+                    BuildBodyEntryOutput(ann.Id, annId, "group", ann, div,
+                        divMerged);
                     break;
                 case 'c':
                     // connection
-                    BuildBodyEntryOutput(annId, "connection", ann, div);
+                    BuildBodyEntryOutput(ann.Id, annId, "connection", ann, div,
+                        divMerged);
                     break;
                 default:
                     Logger?.LogWarning("Unknown annotation type in ID \"{type}\"",
