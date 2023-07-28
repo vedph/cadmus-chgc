@@ -6,6 +6,7 @@ using System;
 using Cadmus.Chgc.Parts;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Cadmus.Chgc.Export;
 
@@ -275,6 +276,33 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         else parent.Add(element);
     }
 
+    private static bool TextContainsId(string text, string id)
+    {
+        // return true if any of the tokens got by splitting text
+        // at whitespaces is equal to id
+        return text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+            .Contains(id);
+    }
+
+    private static bool CompareIdsWithoutSuffix(string a, string b)
+    {
+        // return true if a and b are equal up to the last -NN
+        Regex r = new(@"(.+)-\d+$", RegexOptions.Compiled);
+        Match ma = r.Match(a);
+        Match mb = r.Match(b);
+        return !ma.Success && !mb.Success ?
+            a == b : ma.Groups[1].Value == mb.Groups[1].Value;
+    }
+
+    private static bool TextContainsUnsuffixedId(string text, string id)
+    {
+        // return true if any of the tokens got by splitting text
+        // at whitespaces and removing from each ID its final -NN suffix is equal
+        // to id
+        return text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+            .Any(s => CompareIdsWithoutSuffix(s, id));
+    }
+
     /// <summary>
     /// Does the composition for the specified item.
     /// </summary>
@@ -289,46 +317,65 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         // get image annotations part
         ChgcImageAnnotationsPart? part = item.Parts
             .OfType<ChgcImageAnnotationsPart>().FirstOrDefault();
-        if (part == null || part.Annotations.Count == 0) return;
+        if (part == null || part.Image == null || part.Annotations.Count == 0)
+            return;
 
-        // facsimile (set by derived class)
+        // get facsimile (set by derived class)
         XElement? facs = Output!.GetData(M_FACS_KEY) as XElement
             ?? throw new InvalidOperationException("Expected facsimile element");
 
-        // body (set by derived class)
+        // get body (set by derived class)
         XElement? body = Output!.GetData(M_BODY_KEY) as XElement
             ?? throw new InvalidOperationException("Expected body element");
 
-        // facsimile/surface @n=ID @source=item ID
-        string imageId = $"{CurrentGroupId}/" + part.Annotations[0].Target!.Id;
+        // (a) surface: image has a corresponding facsimile/surface with:
+        // - @id = # + item GUID
+        // - @n = friendly ID
+        // - @source = image URI
+        string friendlyImageId = $"{CurrentGroupId}/" +
+            part.Annotations[0].Target!.Id;
+        string itemId = "#" + item.Id;
+
+        // reuse surface if exists, else create it
         XElement? surface = facs.Elements(TEI_NS + "surface").FirstOrDefault(
-            e => e.Attribute("n")!.Value == imageId);
+            e => e.Attribute("id")!.Value == itemId);
         if (surface == null)
         {
             surface = new(TEI_NS + "surface",
-                new XAttribute("n", imageId),
-                new XAttribute("source", "#" + item.Id));
+                new XAttribute(XML_NS + "id", itemId),
+                new XAttribute("n", friendlyImageId),
+                new XAttribute("source", part.Image.Uri));
             InsertInOrder(facs, surface, "n");
         }
 
-        // body/pb n=ID source=item ID
+        // (b) pb: body/pb with:
+        // - @id = # + item GUID
+        // - @n = friendly ID
+        // reuse pb if exists, else create it
         XElement? pb = body.Elements(TEI_NS + "pb").FirstOrDefault(
-            e => e.Attribute("n")!.Value == imageId);
+            e => e.Attribute(XML_NS + "id")!.Value == itemId);
         if (pb == null)
         {
             pb = new XElement(TEI_NS + "pb",
-                new XAttribute("n", imageId),
-                new XAttribute("source", "#" + item.Id));
+                new XAttribute(XML_NS + "id", itemId),
+                new XAttribute("n", friendlyImageId));
             InsertInOrder(body, pb, "n");
         }
 
-        // part's annotations (sorted by ID)
+        // (c) part's annotations (sorted by ID): zone's and div's
         List<ChgcImageAnnotation> sortedAnnotations = (
             from a in part.Annotations
-            let annId = imageId + "/" + a.Eid
+            let annId = friendlyImageId + "/" + a.Eid
             orderby annId
             select a).ToList();
-        IList<string> annIds = BuildAnnotationIds(imageId, sortedAnnotations);
+        IList<string> annIds = BuildAnnotationIds(friendlyImageId,
+            sortedAnnotations);
+
+        // usually there is 1 div per zone, but when two or more zones share
+        // their entity ID, there is only 1 div for all zones with that ID.
+        // as we are sorting by ID, we use prevDiv to reuse the preceding div
+        // in this case
+        XElement? prevDiv = null;
 
         for (int i = 0; i < sortedAnnotations.Count; i++)
         {
@@ -337,29 +384,42 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             Logger?.LogInformation("Annotation {annId} {annEid} {annTarget}",
                 annId, ann.Eid, ann.Target);
 
-            // facsimile/surface/zone @id=annID @source=GUID
+            // (c1) facsimile/surface/zone with:
+            // - @id = annotation GUID
+            // - @n = annID
+            // reuse zone if exists, else create it
             XElement? zone = surface.Elements(TEI_NS + "zone").FirstOrDefault(
-                e => e.Attribute(XML_NS + "id")!.Value == annId);
+                e => e.Attribute(XML_NS + "id")!.Value == ann.Id);
             if (zone == null)
             {
                 zone = new(TEI_NS + "zone",
-                    new XAttribute(XML_NS + "id", annId),
-                    new XAttribute("source", ann.Id));
-                InsertInOrder(surface, zone, XML_NS + "id");
+                    new XAttribute(XML_NS + "id", ann.Id),
+                    new XAttribute("n", annId));
+                InsertInOrder(surface, zone, TEI_NS + "n");
             }
             SelectorXmlConverter.Convert(ann.Selector, zone);
 
-            // body/div according to type (after pb)
-            string annIdRef = "#" + annId;
-            XElement? div = body.Elements(TEI_NS + "div").FirstOrDefault(
-                e => e.Attribute("facs")!.Value == annIdRef);
-            if (div == null)
+            // (c2) body/div according to type (after pb)
+            XElement? div;
+            if (prevDiv != null &&
+                TextContainsUnsuffixedId(prevDiv.Attribute("facs")!.Value, ann.Id))
             {
-                div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
-                XElement? nextPb = pb.ElementsAfterSelf(TEI_NS + "pb")
-                    .FirstOrDefault();
-                InsertInOrder(body, div, "facs", pb, nextPb);
+                div = prevDiv;
+                div.Attribute("facs")!.Value += $" {ann.Id}";
             }
+            else
+            {
+                div = body.Elements(TEI_NS + "div").FirstOrDefault(
+                    e => TextContainsId(e.Attribute("facs")!.Value, ann.Id));
+                if (div == null)
+                {
+                    div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
+                    XElement? nextPb = pb.ElementsAfterSelf(TEI_NS + "pb")
+                        .FirstOrDefault();
+                    InsertInOrder(body, div, "facs", pb, nextPb);
+                }
+            }
+            prevDiv = div;
 
             switch (ann.Eid[0])
             {

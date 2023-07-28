@@ -45,6 +45,14 @@ public static class SelectorXmlConverter
         target.SetAttributeValue("lry", y2);
     }
 
+    public static XElement RectangleToSVG(double x, double y,
+        double width, double height) =>
+        new(ChgcTeiItemComposer.SVG_NS + "svg",
+            new XAttribute("x", x),
+            new XAttribute("y", y),
+            new XAttribute("width", width),
+            new XAttribute("height", height));
+
     /// <summary>
     /// Converts the specified selector into a set of attributes on the target
     /// element.
@@ -74,6 +82,11 @@ public static class SelectorXmlConverter
             target.SetAttributeValue("uly", y);
             target.SetAttributeValue("lrx", x + w);
             target.SetAttributeValue("lry", y + h);
+
+            // replace SVG (this does not come from Annotorious)
+            target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
+            target.Add(RectangleToSVG(x, y, w, h));
+
             return;
         }
 
@@ -112,7 +125,7 @@ public static class SelectorXmlConverter
                 target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
                 target.Add(
                     new XElement(ChgcTeiItemComposer.SVG_NS + "svg",
-                        new XElement(ChgcTeiItemComposer.SVG_NS + "ellipse",
+                        new XElement(ChgcTeiItemComposer.SVG_NS + "circle",
                             new XAttribute("cx", shape.Attribute("cx")!.Value),
                             new XAttribute("cy", shape.Attribute("cy")!.Value),
                             new XAttribute("r", shape.Attribute("r")!.Value))));
