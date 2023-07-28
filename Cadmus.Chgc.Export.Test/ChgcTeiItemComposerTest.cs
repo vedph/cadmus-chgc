@@ -89,12 +89,12 @@ public sealed class ChgcTeiItemComposerTest
         XDocument doc = output.Document;
         AssertTeiSkeleton(doc);
 
-        // <facsimile>
+        // tei/facsimile
         XElement? facsimile = doc.Root!.Element(
             ChgcTeiItemComposer.TEI_NS + "facsimile");
         Assert.NotNull(facsimile);
 
-        // <surface> in facsimile
+        // facsimile/surface
         Assert.Single(facsimile.Elements());
         XElement? surface = facsimile!.Element(
             ChgcTeiItemComposer.TEI_NS + "surface");
@@ -107,7 +107,7 @@ public sealed class ChgcTeiItemComposerTest
         // surface has 2 zones
         Assert.Equal(2, surface!.Elements().Count());
 
-        // zone 1
+        // surface/zone 1
         XElement? zone = surface!.Elements().First();
         Assert.NotNull(zone);
         Assert.Equal("zone", zone.Name.LocalName);
@@ -127,7 +127,7 @@ public sealed class ChgcTeiItemComposerTest
         Assert.Equal("130", svg!.Attribute("width")?.Value);
         Assert.Equal("70", svg!.Attribute("height")?.Value);
 
-        // zone 2
+        // surface/zone 2
         zone = surface!.Elements().Last();
         Assert.NotNull(zone);
         Assert.Equal("zone", zone.Name.LocalName);
@@ -148,6 +148,39 @@ public sealed class ChgcTeiItemComposerTest
         Assert.Equal("400", circle!.Attribute("cx")?.Value);
         Assert.Equal("200", circle!.Attribute("cy")?.Value);
         Assert.Equal("50", circle!.Attribute("r")?.Value);
+
+        // text/body/pb
+        XElement? pb = doc.Root!.Element(ChgcTeiItemComposer.TEI_NS + "text")!
+            .Element(ChgcTeiItemComposer.TEI_NS + "body")!
+            .Element(ChgcTeiItemComposer.TEI_NS + "pb");
+        Assert.NotNull(pb);
+        Assert.Equal("#" + item.Id,
+            pb.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("ccc-ms029/1", pb.Attribute("n")?.Value);
+
+        // body/div (abacuc)
+        XElement? div = doc.Root!.Element(ChgcTeiItemComposer.TEI_NS + "text")!
+            .Element(ChgcTeiItemComposer.TEI_NS + "body")!
+            .Element(ChgcTeiItemComposer.TEI_NS + "div");
+        Assert.NotNull(div);
+        Assert.Equal(part.Annotations[1].Id, 
+            div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("node", div.Attribute("type")?.Value);
+        Assert.Equal("#" + part.Annotations[1].Eid,
+            div.Attribute("corresp")?.Value);
+        Assert.Equal("#ccc-ms029/1/n-abacuc", div.Attribute("facs")?.Value);
+
+        // body/second div (aaron)
+        div = doc.Root!.Element(ChgcTeiItemComposer.TEI_NS + "text")!
+            .Element(ChgcTeiItemComposer.TEI_NS + "body")!
+            .Elements(ChgcTeiItemComposer.TEI_NS + "div").Last();
+        Assert.NotNull(div);
+        Assert.Equal(part.Annotations[0].Id,
+            div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("node", div.Attribute("type")?.Value);
+        Assert.Equal("#" + part.Annotations[0].Eid,
+            div.Attribute("corresp")?.Value);
+        Assert.Equal("#ccc-ms029/1/n-aaron", div.Attribute("facs")?.Value);
     }
 
     [Fact]

@@ -413,7 +413,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
                     e => TextContainsId(e.Attribute("facs")!.Value, ann.Id));
                 if (div == null)
                 {
-                    div = new(TEI_NS + "div", new XAttribute("source", ann.Id));
+                    div = new(TEI_NS + "div", new XAttribute(XML_NS + "id", ann.Id));
                     XElement? nextPb = pb.ElementsAfterSelf(TEI_NS + "pb")
                         .FirstOrDefault();
                     InsertInOrder(body, div, "facs", pb, nextPb);
