@@ -48,10 +48,16 @@ public static class SelectorXmlConverter
     public static XElement RectangleToSVG(double x, double y,
         double width, double height) =>
         new(ChgcTeiItemComposer.SVG_NS + "svg",
-            new XAttribute("x", x),
-            new XAttribute("y", y),
-            new XAttribute("width", width),
-            new XAttribute("height", height));
+            new XElement(ChgcTeiItemComposer.SVG_NS + "rect",
+                new XAttribute("x", x),
+                new XAttribute("y", y),
+                new XAttribute("width", width),
+                new XAttribute("height", height)));
+
+    public static XElement PolygonToSVG(string points) =>
+        new(ChgcTeiItemComposer.SVG_NS + "svg",
+            new XElement(ChgcTeiItemComposer.SVG_NS + "polygon",
+                new XAttribute("points", points)));
 
     /// <summary>
     /// Converts the specified selector into a set of attributes on the target
@@ -103,7 +109,10 @@ public static class SelectorXmlConverter
             // </polygon></svg>
             case "polygon":
                 target.SetAttributeValue("points",
-                    shape.Attribute("points")!.Value!);
+                    shape.Attribute("points")!.Value);
+                // replace SVG (this does not come from Annotorious)
+                target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
+                target.Add(PolygonToSVG(shape.Attribute("points")!.Value));
                 return;
 
             // circle: e.g.

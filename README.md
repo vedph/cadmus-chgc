@@ -235,6 +235,10 @@ Example `facsimile` element:
 
 ## History
 
+### 2.1.2
+
+- 2023-08-01: fixes to supplied SVG in export.
+
 ### 2.1.0
 
 - 2023-07-28: refactoring XML output schema.
