@@ -63,7 +63,7 @@ public class ChgcItemImporter
     /// <returns>Count of items added.</returns>
     /// <exception cref="ArgumentNullException">groupId or doc</exception>
     /// <exception cref="InvalidOperationException">Missing page number in
-    /// surface {n}, or Missing facs URI in surface {n}.</exception>
+    /// surface {n}, or Missing source URI in surface {n}.</exception>
     public int Import(string groupId, XDocument doc)
     {
         if (groupId is null) throw new ArgumentNullException(nameof(groupId));
@@ -85,9 +85,9 @@ public class ChgcItemImporter
             string? page = (surface.Attribute("n")?.Value) ??
                 throw new InvalidOperationException(
                     $"Missing page number in surface {n}");
-            string? uri = (surface.Attribute("facs")?.Value) ??
+            string? uri = (surface.Attribute("source")?.Value) ??
                 throw new InvalidOperationException(
-                    $"Missing facs URI in surface {n}");
+                    $"Missing source URI in surface {n}");
 
             string shortenedUri = UriShortenerPattern == null
                 ? uri
