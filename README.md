@@ -106,8 +106,8 @@ here, `geometry-attributes` are:
        corresp="#ENTITY_ID"
        facs="#IMAGE_HID/ENTITY_ID ...">
       <!-- these elements are output only if their placeholder is defined -->
-      <label>...</label>
-      <note>...</note>
+      <ab type="label">...</ab>
+      <note><p>...</p></note>
   </div>
   <!-- end for each image -->
 </body>
@@ -168,10 +168,10 @@ A sample output follows, from a single item (page) having 3 annotations, 2 of th
     <body>
       <pb xml:id="661f0266-43ee-45ab-93bf-008b26ed498b" n="ccc-ms029/1" />
       <div xml:id="36c9730c-a7c9-4a28-8889-8d6015ee14fe faec7d03-8010-407f-8689-a38cf35505ab" type="node" corresp="#n-aaron" facs="#ccc-ms029/1/n-aaron-01 #ccc-ms029/1/n-aaron-02">
-        <label>Aaron</label>
+        <ab type="label">Aaron</ab>
       </div>
       <div xml:id="af35f367-a921-4af3-bb84-4911cbc82a53" type="node" corresp="#n-abacuc" facs="#ccc-ms029/1/n-abacuc">
-        <label>Abacuc</label>
+        <ab type="label">Abacuc</ab>
       </div>
     </body>
   </text>
@@ -238,7 +238,9 @@ Example `facsimile` element:
 
 ## History
 
-- 2023-08-08: added `a-` and `i-` prefixes to IDs in XML.
+- 2023-08-08:
+  - added `a-` and `i-` prefixes to IDs in XML.
+  - changed `label` to `ab @type="label"` and `div/text` into `div/note` in XML.
 
 ### 2.1.3
 

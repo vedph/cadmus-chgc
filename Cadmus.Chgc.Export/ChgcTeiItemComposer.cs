@@ -167,24 +167,25 @@ public abstract class ChgcTeiItemComposer : ItemComposer
 
     private static void BuildLabelAndText(ChgcImageAnnotation ann, XElement target)
     {
-        // label
-        XElement? label = target.Element(TEI_NS + "label");
+        // label: ab @type="label"
+        XElement? label = target.Element(TEI_NS + "ab");
         if (!string.IsNullOrEmpty(ann.Label))
         {
             if (label != null) label.Value = ann.Label;
-            else target.Add(new XElement(TEI_NS + "label", ann.Label));
+            else target.Add(new XElement(TEI_NS + "ab", ann.Label,
+                new XAttribute("type", "label")));
         }
         else label?.Remove();
 
-        // text
-        XElement? note = target.Element(TEI_NS + "text");
+        // note: note/p+
+        XElement? note = target.Element(TEI_NS + "note");
         if (!string.IsNullOrEmpty(ann.Note))
         {
             if (note != null) note.Value = ann.Note;
             else
             {
                 target.Add(BuildTextParagraphs(ann.Note,
-                    new XElement(TEI_NS + "text")));
+                    new XElement(TEI_NS + "note")));
             }
         }
         else note?.Remove();
