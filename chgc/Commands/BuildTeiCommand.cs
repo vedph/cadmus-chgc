@@ -23,7 +23,7 @@ internal sealed class BuildTeiCommand : AsyncCommand<BuildTeiCommandOptions>
             AnsiConsole.MarkupLine($"Group ID: [cyan]{settings.GroupId}[/]");
 
         AnsiConsole.Status()
-            .Spinner(Spinner.Known.Star)
+            .Spinner(Spinner.Known.Ascii)
             .Start("Building TEI...", ctx =>
         {
             // collector

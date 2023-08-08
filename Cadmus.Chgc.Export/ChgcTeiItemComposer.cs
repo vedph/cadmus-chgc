@@ -375,16 +375,18 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         }
 
         // (b) pb: body/pb with:
-        // - @id = i- + item GUID
+        // - @id = p- + new GUID
+        // - @source = i- + item GUID
         // - @n = friendly ID
         // reuse pb if exists, else create it
         XElement? pb = body.Elements(TEI_NS + "pb").FirstOrDefault(
-            e => e.Attribute(XML_NS + "id")!.Value == prefixedItemId);
+            e => e.Attribute("source")!.Value == prefixedItemId);
         if (pb == null)
         {
             pb = new XElement(TEI_NS + "pb",
-                new XAttribute(XML_NS + "id", prefixedItemId),
-                new XAttribute("n", friendlyImageId));
+                new XAttribute(XML_NS + "id", "p-" + Guid.NewGuid().ToString()),
+                new XAttribute("n", friendlyImageId),
+                new XAttribute("source", prefixedItemId));
             InsertInOrder(body, pb, "n");
         }
 
@@ -427,6 +429,8 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             SelectorXmlConverter.Convert(ann.Selector, zone);
 
             // (c2) body/div according to type (after pb)
+            // - @id = d- + new GUID
+            // - @source = a- + annotation GUID
             bool divPending = false;
             bool divMerged = false;
             XElement? nextPb = null;
@@ -443,11 +447,13 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             else
             {
                 div = body.Elements(TEI_NS + "div").FirstOrDefault(
-                    e => TextContainsId(e.Attribute(XML_NS + "id")!.Value, prefixedAnnGuid));
+                    e => TextContainsId(e.Attribute("source")!.Value,
+                                        prefixedAnnGuid));
                 if (div == null)
                 {
                     div = new(TEI_NS + "div",
-                        new XAttribute(XML_NS + "id", prefixedAnnGuid));
+                        new XAttribute(XML_NS + "id", "d-" + Guid.NewGuid().ToString()),
+                        new XAttribute("source", prefixedAnnGuid));
                     nextPb = pb.ElementsAfterSelf(TEI_NS + "pb").FirstOrDefault();
                     divPending = true;
                 }

@@ -22,7 +22,7 @@ internal sealed class ImportTeiCommand : AsyncCommand<ImportTeiCommandOptions>
             AnsiConsole.MarkupLine($"Database: [cyan]{settings.DatabaseName}[/]");
 
         AnsiConsole.Status()
-            .Spinner(Spinner.Known.Star)
+            .Spinner(Spinner.Known.Ascii)
             .Start("Importing TEI...", ctx =>
             {
                 // repository

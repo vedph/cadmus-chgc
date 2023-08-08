@@ -64,15 +64,16 @@ Each TEI document is named after its group ID (=manuscript ID). Its header is so
 - `ENTITY_ID`: the ID of the entity picked from the project's authority list, e.g. `n-aaron`.
 - `GEOMETRY_ATTRIBUTES` are attributes which vary according to the geometry of the drawn shape (see below).
 - `SVG` is the SVG code, produced by Annotorious or supplied by the exporter for rectangular shapes and polygons.
+- `GUID` is a newly generated GUID, which will change whenever the exporter runs.
 
 ```xml
 <facsimile>
   <!-- begin for each image -->
-  <surface xml:id="ITEM_GUID"
+  <surface xml:id="i-ITEM_GUID"
            n="IMAGE_HID"
            source="IMAGE_URI">
     <!-- begin for each annotation in the image -->
-    <zone xml:id="ANNOTATION_ID"
+    <zone xml:id="a-ANNOTATION_ID"
           n="IMAGE_HID/ENTITY_ID"
           GEOMETRY_ATTRIBUTES>
       <svg xmlns="http://www.w3.org/2000/svg">
@@ -98,14 +99,16 @@ here, `geometry-attributes` are:
 ```xml
 <body>
   <!-- begin for each image -->
-  <pb xml:id="ITEM_ID"
-      n="IMAGE_HID"/>
+  <pb xml:id="p-GUID"
+      n="IMAGE_HID"
+      source="i-ITEM_GUID"/>
   <!-- a div for each annotation, merged if sharing the same ENTITY_ID; type is node, text, diagram, picture, group, connection -->
-  <div xml:id="ANNOTATION_ID ..."
+  <div xml:id="a-GUID"
+       source="ANNOTATION_ID ..."
        type="node"
        corresp="#ENTITY_ID"
        facs="#IMAGE_HID/ENTITY_ID ...">
-      <!-- these elements are output only if their placeholder is defined -->
+      <!-- these elements are output only if they have content -->
       <ab type="label">...</ab>
       <note><p>...</p></note>
   </div>
@@ -116,12 +119,13 @@ here, `geometry-attributes` are:
 A sample output follows, from a single item (page) having 3 annotations, 2 of them sharing the same entity ID (`n-aaron`):
 
 ```xml
+<?xml version="1.0" encoding="utf-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
     <fileDesc>
       <titleStmt>
         <title type="main">Compendium Historiae in genealogia Christi</title>
-        <title type="sub">Electronic transcription of the manuscript </title>
+        <title type="sub">Electronic transcription of the manuscript ccc-ms029</title>
         <author>Petrus von Poitiers<ex>Petrus Pictaviensis</ex></author>
         <respStmt>
           <resp>edited by</resp>
@@ -150,28 +154,38 @@ A sample output follows, from a single item (page) having 3 annotations, 2 of th
     </fileDesc>
   </teiHeader>
   <facsimile>
-    <surface xml:id="661f0266-43ee-45ab-93bf-008b26ed498b" n="ccc-ms029/1" source="http://img.org/1r.jpg">
-      <zone xml:id="36c9730c-a7c9-4a28-8889-8d6015ee14fe" n="ccc-ms029/1/n-aaron-01" ulx="100" uly="50" lrx="230" lry="120">
-        <svg x="100" y="50" width="130" height="70" xmlns="http://www.w3.org/2000/svg " />
+    <surface xml:id="i-c219895d-4680-4088-badc-bf55ab134fee" n="ccc-ms029/17" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/default.jpg">
+      <zone xml:id="a-d7d7c433-9618-4a51-8900-009832bc0b67" n="ccc-ms029/17/n-aaron" ulx="9" uly="73" lrx="64" lry="146">
+        <svg xmlns="http://www.w3.org/2000/svg ">
+          <rect x="9" y="73" width="55" height="73" />
+        </svg>
       </zone>
-      <zone xml:id="faec7d03-8010-407f-8689-a38cf35505ab" n="ccc-ms029/1/n-aaron-02" ulx="300" uly="100" lrx="620" lry="220">
-        <svg x="300" y="100" width="320" height="120" xmlns="http://www.w3.org/2000/svg " />
+      <zone xml:id="a-b42a6b93-2ef2-45cb-b7a2-a168b6af2394" n="ccc-ms029/17/n-abner" points="422,746 553,797 543,923">
+        <svg xmlns="http://www.w3.org/2000/svg ">
+          <polygon points="422,746 553,797 543,923" />
+        </svg>
       </zone>
-      <zone xml:id="af35f367-a921-4af3-bb84-4911cbc82a53" n="ccc-ms029/1/n-abacuc" ulx="350" uly="150" lrx="450" lry="250">
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <circle cx="400" cy="200" r="50" />
+      <zone xml:id="a-e14855e8-8112-48ee-9cc6-3e99c0f6723d" n="ccc-ms029/17/n-eve" ulx="304.3860483977442" uly="194.38604839774425" lrx="407.6139516022558" lry="297.6139516022558">
+        <svg xmlns="http://www.w3.org/2000/svg ">
+          <circle cx="356" cy="246" r="51.61395160225576" />
         </svg>
       </zone>
     </surface>
   </facsimile>
   <text>
     <body>
-      <pb xml:id="661f0266-43ee-45ab-93bf-008b26ed498b" n="ccc-ms029/1" />
-      <div xml:id="36c9730c-a7c9-4a28-8889-8d6015ee14fe faec7d03-8010-407f-8689-a38cf35505ab" type="node" corresp="#n-aaron" facs="#ccc-ms029/1/n-aaron-01 #ccc-ms029/1/n-aaron-02">
+      <pb xml:id="p-6f7143b9-c092-4ff8-a9d1-6efba64853f4" n="ccc-ms029/17" source="i-c219895d-4680-4088-badc-bf55ab134fee" />
+      <div xml:id="a-d7d7c433-9618-4a51-8900-009832bc0b67" source="a-d7d7c433-9618-4a51-8900-009832bc0b67" type="node" corresp="#n-aaron" facs="#ccc-ms029/17/n-aaron">
         <ab type="label">Aaron</ab>
+        <note>
+          <p>A note about Aaron</p>
+        </note>
       </div>
-      <div xml:id="af35f367-a921-4af3-bb84-4911cbc82a53" type="node" corresp="#n-abacuc" facs="#ccc-ms029/1/n-abacuc">
-        <ab type="label">Abacuc</ab>
+      <div xml:id="a-b42a6b93-2ef2-45cb-b7a2-a168b6af2394" source="a-b42a6b93-2ef2-45cb-b7a2-a168b6af2394" type="node" corresp="#n-abner" facs="#ccc-ms029/17/n-abner">
+        <ab type="label">Abner</ab>
+      </div>
+      <div xml:id="a-e14855e8-8112-48ee-9cc6-3e99c0f6723d" source="a-e14855e8-8112-48ee-9cc6-3e99c0f6723d" type="node" corresp="#n-eve" facs="#ccc-ms029/17/n-eve">
+        <ab type="label">Eva</ab>
       </div>
     </body>
   </text>
@@ -241,6 +255,7 @@ Example `facsimile` element:
 - 2023-08-08:
   - added `a-` and `i-` prefixes to IDs in XML.
   - changed `label` to `ab @type="label"` and `div/text` into `div/note` in XML.
+  - moved source GUIDs to `@source` and made `@id` contain a newly generated GUID for `div` and `pb` in XML.
 
 ### 2.1.3
 
