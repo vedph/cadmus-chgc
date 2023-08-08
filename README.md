@@ -238,6 +238,8 @@ Example `facsimile` element:
 
 ## History
 
+- 2023-08-08: added `a-` and `i-` prefixes to IDs in XML.
+
 ### 2.1.3
 
 - 2023-08-06:

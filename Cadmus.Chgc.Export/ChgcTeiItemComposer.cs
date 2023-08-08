@@ -354,34 +354,35 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             ?? throw new InvalidOperationException("Expected body element");
 
         // (a) surface: image has a corresponding facsimile/surface with:
-        // - @id = # + item GUID
+        // - @id = i- + item GUID
         // - @n = friendly ID
         // - @source = image URI
+        string prefixedItemId = "i-" + item.Id;
         string friendlyImageId = $"{CurrentGroupId}/" +
             part.Annotations[0].Target!.Id;
 
         // reuse surface if exists, else create it
         XElement? surface = facs.Elements(TEI_NS + "surface").FirstOrDefault(
-            e => e.Attribute(XML_NS + "id")!.Value == item.Id);
+            e => e.Attribute(XML_NS + "id")!.Value == prefixedItemId);
         if (surface == null)
         {
             surface = new(TEI_NS + "surface",
-                new XAttribute(XML_NS + "id", item.Id),
+                new XAttribute(XML_NS + "id", prefixedItemId),
                 new XAttribute("n", friendlyImageId),
                 new XAttribute("source", part.Image.Uri));
             InsertInOrder(facs, surface, "n");
         }
 
         // (b) pb: body/pb with:
-        // - @id = # + item GUID
+        // - @id = i- + item GUID
         // - @n = friendly ID
         // reuse pb if exists, else create it
         XElement? pb = body.Elements(TEI_NS + "pb").FirstOrDefault(
-            e => e.Attribute(XML_NS + "id")!.Value == item.Id);
+            e => e.Attribute(XML_NS + "id")!.Value == prefixedItemId);
         if (pb == null)
         {
             pb = new XElement(TEI_NS + "pb",
-                new XAttribute(XML_NS + "id", item.Id),
+                new XAttribute(XML_NS + "id", prefixedItemId),
                 new XAttribute("n", friendlyImageId));
             InsertInOrder(body, pb, "n");
         }
@@ -405,20 +406,20 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         {
             ChgcImageAnnotation ann = sortedAnnotations[i];
             string annId = annIds[i];
-            string annGuid = ann.Id[1..];
+            string prefixedAnnGuid = "a-" + ann.Id[1..];
             Logger?.LogInformation("Annotation {annId} {annEid} {annTarget}",
                 annId, ann.Eid, ann.Target);
 
             // (c1) facsimile/surface/zone with:
-            // - @id = annotation GUID
+            // - @id = a- + annotation GUID
             // - @n = annID
             // reuse zone if exists, else create it
             XElement? zone = surface.Elements(TEI_NS + "zone").FirstOrDefault(
-                e => e.Attribute(XML_NS + "id")!.Value == annGuid);
+                e => e.Attribute(XML_NS + "id")!.Value == prefixedAnnGuid);
             if (zone == null)
             {
                 zone = new(TEI_NS + "zone",
-                    new XAttribute(XML_NS + "id", annGuid),
+                    new XAttribute(XML_NS + "id", prefixedAnnGuid),
                     new XAttribute("n", annId));
                 InsertInOrder(surface, zone, TEI_NS + "n");
             }
@@ -441,11 +442,11 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             else
             {
                 div = body.Elements(TEI_NS + "div").FirstOrDefault(
-                    e => TextContainsId(e.Attribute(XML_NS + "id")!.Value, annGuid));
+                    e => TextContainsId(e.Attribute(XML_NS + "id")!.Value, prefixedAnnGuid));
                 if (div == null)
                 {
                     div = new(TEI_NS + "div",
-                        new XAttribute(XML_NS + "id", annGuid));
+                        new XAttribute(XML_NS + "id", prefixedAnnGuid));
                     nextPb = pb.ElementsAfterSelf(TEI_NS + "pb").FirstOrDefault();
                     divPending = true;
                 }
@@ -456,32 +457,32 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             {
                 case 'n':
                     // node
-                    BuildBodyEntryOutput(annGuid, annId, "node", ann, div,
+                    BuildBodyEntryOutput(prefixedAnnGuid, annId, "node", ann, div,
                         divMerged);
                     break;
                 case 't':
                     // text
-                    BuildBodyEntryOutput(annGuid, annId, "text", ann, div,
+                    BuildBodyEntryOutput(prefixedAnnGuid, annId, "text", ann, div,
                         divMerged);
                     break;
                 case 'd':
                     // diagram
-                    BuildBodyEntryOutput(annGuid, annId, "diagram", ann, div,
+                    BuildBodyEntryOutput(prefixedAnnGuid, annId, "diagram", ann, div,
                         divMerged);
                     break;
                 case 'p':
                     // picture
-                    BuildBodyEntryOutput(annGuid, annId, "picture", ann, div,
+                    BuildBodyEntryOutput(prefixedAnnGuid, annId, "picture", ann, div,
                         divMerged);
                     break;
                 case 'g':
                     // group
-                    BuildBodyEntryOutput(annGuid, annId, "group", ann, div,
+                    BuildBodyEntryOutput(prefixedAnnGuid, annId, "group", ann, div,
                         divMerged);
                     break;
                 case 'c':
                     // connection
-                    BuildBodyEntryOutput(annGuid, annId, "connection", ann, div,
+                    BuildBodyEntryOutput(prefixedAnnGuid, annId, "connection", ann, div,
                         divMerged);
                     break;
                 default:
