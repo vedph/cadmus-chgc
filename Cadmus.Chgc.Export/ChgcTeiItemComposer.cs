@@ -158,37 +158,56 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         Output!.Data[M_BODY_KEY] = body;
     }
 
-    private static XElement BuildTextParagraphs(string text, XElement target)
+    private static IEnumerable<XElement> BuildTextParagraphs(string text)
     {
-        foreach (string line in text.Split('\n'))
-            target.Add(new XElement(TEI_NS + "p", line.Trim()));
-        return target;
+        return from line in text.Split('\n')
+               select new XElement(TEI_NS + "p", line.Trim())
+               into p
+               where !string.IsNullOrEmpty(p.Value)
+               select p;
     }
 
     private static void BuildLabelAndText(ChgcImageAnnotation ann, XElement target)
     {
         // label: ab @type="label"
-        XElement? label = target.Element(TEI_NS + "ab");
+        XElement? label = target.Elements().FirstOrDefault(
+            e => e.Name == TEI_NS + "ab" &&
+                 e.Attribute("type")?.Value == "label");
+
         if (!string.IsNullOrEmpty(ann.Label))
         {
-            if (label != null) label.Value = ann.Label;
-            else target.Add(new XElement(TEI_NS + "ab", ann.Label,
-                new XAttribute("type", "label")));
+            if (label == null)
+            {
+                label = new XElement(TEI_NS + "ab",
+                    new XAttribute("type", "label"),
+                    ann.Label);
+                target.Add(label);
+            }
+            else label.Value = ann.Label;
         }
-        else label?.Remove();
+        else
+        {
+            label?.Remove();
+        }
 
-        // note: note/p+
-        XElement? note = target.Element(TEI_NS + "note");
+        // note: note/p (multiple p)
+        XElement? note = target.Elements().FirstOrDefault(
+            e => e.Name == TEI_NS + "note");
+
         if (!string.IsNullOrEmpty(ann.Note))
         {
-            if (note != null) note.Value = ann.Note;
-            else
+            if (note == null)
             {
-                target.Add(BuildTextParagraphs(ann.Note,
-                    new XElement(TEI_NS + "note")));
+                note = new XElement(TEI_NS + "note");
+                target.Add(note);
             }
+            note.Elements(TEI_NS + "p").Remove();
+            note.Add(BuildTextParagraphs(ann.Note));
         }
-        else note?.Remove();
+        else
+        {
+            note?.Remove();
+        }
     }
 
     private static void AppendAttributeId(XElement target, XName attrName,
@@ -414,15 +433,17 @@ public abstract class ChgcTeiItemComposer : ItemComposer
                 annId, ann.Eid, ann.Target);
 
             // (c1) facsimile/surface/zone with:
-            // - @id = a- + annotation GUID
+            // - @id = z- + new GUID
+            // - @source = a- + annotation GUID
             // - @n = annID
             // reuse zone if exists, else create it
             XElement? zone = surface.Elements(TEI_NS + "zone").FirstOrDefault(
-                e => e.Attribute(XML_NS + "id")!.Value == prefixedAnnGuid);
+                e => e.Attribute("source")!.Value == prefixedAnnGuid);
             if (zone == null)
             {
                 zone = new(TEI_NS + "zone",
-                    new XAttribute(XML_NS + "id", prefixedAnnGuid),
+                    new XAttribute(XML_NS + "id", "z-" + Guid.NewGuid().ToString()),
+                    new XAttribute("source", prefixedAnnGuid),
                     new XAttribute("n", annId));
                 InsertInOrder(surface, zone, TEI_NS + "n");
             }
