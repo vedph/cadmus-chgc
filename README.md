@@ -117,16 +117,15 @@ here, `geometry-attributes` are:
 </body>
 ```
 
-A sample output follows, from a single item (page) having 3 annotations, 2 of them sharing the same entity ID (`n-aaron`):
+A sample output follows, from a single item (page) having 2 annotations, the first one including a note with two paragraphs:
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
     <fileDesc>
       <titleStmt>
         <title type="main">Compendium Historiae in genealogia Christi</title>
-        <title type="sub">Electronic transcription of the manuscript ccc-ms029</title>
+        <title type="sub">Electronic transcription of the manuscript </title>
         <author>Petrus von Poitiers<ex>Petrus Pictaviensis</ex></author>
         <respStmt>
           <resp>edited by</resp>
@@ -155,44 +154,31 @@ A sample output follows, from a single item (page) having 3 annotations, 2 of th
     </fileDesc>
   </teiHeader>
   <facsimile>
-    <surface xml:id="i-c219895d-4680-4088-badc-bf55ab134fee" n="ccc-ms029/17" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/default.jpg">
-      <zone xml:id="z-94f0f9e7-e661-4457-a66e-53c98005f9a6" source="a-d7d7c433-9618-4a51-8900-009832bc0b67" n="ccc-ms029/17/n-aaron" ulx="9" uly="73" lrx="64" lry="146">
+    <surface xml:id="i-cb8f536b-e042-413e-9e54-8b402d2f4b1d" n="ccc-ms029/1" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_fob_TC_46/full/1024,/0/default.jpg">
+      <zone xml:id="z-af3f7ec4-628a-4309-9925-47f02c910002" source="a-ba853490-d778-4f81-aeda-cb029374f201" n="ccc-ms029/1/n-aaron" ulx="142" uly="82" lrx="322" lry="257">
         <svg xmlns="http://www.w3.org/2000/svg ">
-          <rect x="9" y="73" width="55" height="73" />
+          <rect x="142" y="82" width="180" height="175" />
         </svg>
       </zone>
-      <zone xml:id="z-19a22412-ec56-457a-9d2b-e4f04adec46c" source="a-b42a6b93-2ef2-45cb-b7a2-a168b6af2394" n="ccc-ms029/17/n-abner" points="422,746 553,797 543,923">
+      <zone xml:id="z-f9798f9d-9eeb-4a2f-aa2f-3bcf48b0f65d" source="a-22af5bee-3981-4edc-85b9-ca3288105f03" n="ccc-ms029/1/n-abacuc" ulx="363.3053113101396" uly="191.8053113101396" lrx="549.6946886898604" lry="378.1946886898604">
         <svg xmlns="http://www.w3.org/2000/svg ">
-          <polygon points="422,746 553,797 543,923" />
-        </svg>
-      </zone>
-      <zone xml:id="z-1d6f2ae3-5760-406d-aff5-6aaa62651597" source="a-e14855e8-8112-48ee-9cc6-3e99c0f6723d" n="ccc-ms029/17/n-eve" ulx="304.3860483977442" uly="194.38604839774425" lrx="407.6139516022558" lry="297.6139516022558">
-        <svg xmlns="http://www.w3.org/2000/svg ">
-          <circle cx="356" cy="246" r="51.61395160225576" />
+          <circle cx="456.5" cy="285" r="93.19468868986043" />
         </svg>
       </zone>
     </surface>
   </facsimile>
   <text>
     <body>
-      <pb xml:id="p-1c233984-3140-44af-adb5-bf05a3339342" n="ccc-ms029/17" source="i-c219895d-4680-4088-badc-bf55ab134fee" />
-      <div xml:id="a-d7d7c433-9618-4a51-8900-009832bc0b67" source="a-d7d7c433-9618-4a51-8900-009832bc0b67" type="node" corresp="#n-aaron" facs="#ccc-ms029/17/n-aaron">
-        <div type="label">
-          <p>Aaron</p>
-        </div>
-        <div type="note">
-          <p>A note about Aaron</p>
-        </div>
+      <pb xml:id="p-87210ce5-aaa4-4d64-8cd4-57fa15418104" n="ccc-ms029/1" source="i-cb8f536b-e042-413e-9e54-8b402d2f4b1d" />
+      <div xml:id="a-ba853490-d778-4f81-aeda-cb029374f201" source="a-ba853490-d778-4f81-aeda-cb029374f201" type="node" corresp="#n-aaron" facs="#ccc-ms029/1/n-aaron">
+        <ab type="label">Aaron</ab>
+        <note>
+          <p>A note about Aaron.</p>
+          <p>This is the second paragraph.</p>
+        </note>
       </div>
-      <div xml:id="a-b42a6b93-2ef2-45cb-b7a2-a168b6af2394" source="a-b42a6b93-2ef2-45cb-b7a2-a168b6af2394" type="node" corresp="#n-abner" facs="#ccc-ms029/17/n-abner">
-        <div type="label">
-          <p>Abner</p>
-        </div>
-      </div>
-      <div xml:id="a-e14855e8-8112-48ee-9cc6-3e99c0f6723d" source="a-e14855e8-8112-48ee-9cc6-3e99c0f6723d" type="node" corresp="#n-eve" facs="#ccc-ms029/17/n-eve">
-        <div type="label">
-          <p>Eva</p>
-        </div>
+      <div xml:id="a-22af5bee-3981-4edc-85b9-ca3288105f03" source="a-22af5bee-3981-4edc-85b9-ca3288105f03" type="node" corresp="#n-abacuc" facs="#ccc-ms029/1/n-abacuc">
+        <ab type="label">Abacuc</ab>
       </div>
     </body>
   </text>
