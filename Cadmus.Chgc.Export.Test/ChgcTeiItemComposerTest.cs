@@ -348,7 +348,7 @@ public sealed class ChgcTeiItemComposerTest
         XElement? surface = facsimile!.Element(
             ChgcTeiItemComposer.TEI_NS + "surface");
         Assert.NotNull(surface);
-        Assert.Equal("#" + item.Id, surface!
+        Assert.Equal("i-" + item.Id, surface!
             .Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1", surface!.Attribute("n")?.Value);
         Assert.Equal(part.Image!.Uri, surface!.Attribute("source")?.Value);

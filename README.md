@@ -245,6 +245,12 @@ Example `facsimile` element:
 
 ## History
 
+### 2.1.5
+
+- 2023-09-05:
+  - updated packages.
+  - tolerate missing `@id` when patching.
+
 ### 2.1.4
 
 - 2023-08-17: refactored `div` content for label and note:

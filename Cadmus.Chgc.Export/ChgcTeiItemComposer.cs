@@ -383,7 +383,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
 
         // reuse surface if exists, else create it
         XElement? surface = facs.Elements(TEI_NS + "surface").FirstOrDefault(
-            e => e.Attribute(XML_NS + "id")!.Value == prefixedItemId);
+            e => e.Attribute(XML_NS + "id")?.Value == prefixedItemId);
         if (surface == null)
         {
             surface = new(TEI_NS + "surface",
@@ -399,7 +399,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         // - @n = friendly ID
         // reuse pb if exists, else create it
         XElement? pb = body.Elements(TEI_NS + "pb").FirstOrDefault(
-            e => e.Attribute("source")!.Value == prefixedItemId);
+            e => e.Attribute("source")?.Value == prefixedItemId);
         if (pb == null)
         {
             pb = new XElement(TEI_NS + "pb",
@@ -438,7 +438,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             // - @n = annID
             // reuse zone if exists, else create it
             XElement? zone = surface.Elements(TEI_NS + "zone").FirstOrDefault(
-                e => e.Attribute("source")!.Value == prefixedAnnGuid);
+                e => e.Attribute("source")?.Value == prefixedAnnGuid);
             if (zone == null)
             {
                 zone = new(TEI_NS + "zone",
@@ -460,7 +460,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             // if there is a previous div and it contains an ID equal to annId
             // except for their suffixes, reuse it adding the IDs to its attrs
             if (prevDiv != null && TextContainsUnsuffixedId(
-                prevDiv.Attribute("facs")!.Value, "#" + annId))
+                prevDiv.Attribute("facs")?.Value ?? "", "#" + annId))
             {
                 div = prevDiv;
                 divMerged = true;
@@ -468,7 +468,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             else
             {
                 div = body.Elements(TEI_NS + "div").FirstOrDefault(
-                    e => TextContainsId(e.Attribute("source")!.Value,
+                    e => TextContainsId(e.Attribute("source")?.Value ?? "",
                                         prefixedAnnGuid));
                 if (div == null)
                 {
