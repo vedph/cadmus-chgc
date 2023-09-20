@@ -42,7 +42,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// <summary>
     /// The SVG namespace.
     /// </summary>
-    public static readonly XNamespace SVG_NS = "http://www.w3.org/2000/svg ";
+    public static readonly XNamespace SVG_NS = "http://www.w3.org/2000/svg";
 
     /// <summary>
     /// Gets the current group identifier.

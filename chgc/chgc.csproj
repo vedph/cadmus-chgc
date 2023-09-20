@@ -6,9 +6,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Cadmus.Chgc.Cli</RootNamespace>
-		<Version>2.1.5</Version>
-		<FileVersion>2.1.5</FileVersion>
-		<AssemblyVersion>2.1.5</AssemblyVersion>
+		<Version>2.1.6</Version>
+		<FileVersion>2.1.6</FileVersion>
+		<AssemblyVersion>2.1.6</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

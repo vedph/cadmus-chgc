@@ -27,7 +27,7 @@ ID: `it.vedph.chgc.image-annotations`
 
 The CLI tool is a multiple-platform, command-line based tool used to export TEI from a CHGC Cadmus database. This is work in progress; currently the only command is `build-tei` to build one or more TEI documents from scratch. The tool can run in Windows, MacOS, and most Linux flavors.
 
->The import area of this project workflow (=[importing thesauri](https://github.com/vedph/cadmus_tool#thesaurus-import-command) of IDs from Excel/CSV/plain text) is covered by the [generic Cadmus CLI tool](https://github.com/vedph/cadmus_tool).
+>The import area of this project workflow (=[importing thesauri](https://github.com/vedph/cadmus_tool#thesaurus-import-command) of IDs from Excel/CSV/plain text) can also be covered by the [generic Cadmus CLI tool](https://github.com/vedph/cadmus_tool).
 
 ### Build TEI Command
 
@@ -244,6 +244,10 @@ Example `facsimile` element:
 ```
 
 ## History
+
+### 2.1.6
+
+- 2023-09-20: fix SVG namespace in exporter.
 
 ### 2.1.5
 

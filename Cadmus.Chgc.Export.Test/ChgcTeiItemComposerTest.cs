@@ -99,7 +99,7 @@ public sealed class ChgcTeiItemComposerTest
         XElement? surface = facsimile!.Element(
             ChgcTeiItemComposer.TEI_NS + "surface");
         Assert.NotNull(surface);
-        Assert.Equal("#" + item.Id, surface!
+        Assert.Equal("i-" + item.Id, surface!
             .Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1", surface!.Attribute("n")?.Value);
         Assert.Equal(part.Image!.Uri, surface!.Attribute("source")?.Value);
@@ -111,8 +111,10 @@ public sealed class ChgcTeiItemComposerTest
         XElement? zone = surface!.Elements().First();
         Assert.NotNull(zone);
         Assert.Equal("zone", zone.Name.LocalName);
-        Assert.Equal(part.Annotations[0].Id,
+        Assert.StartsWith("z-",
             zone.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
+        Assert.Equal("a-" + part.Annotations[0].Id[1..],
+            zone.Attribute("source")?.Value);
         Assert.Equal("ccc-ms029/1/n-aaron", zone.Attribute("n")?.Value);
         Assert.Equal("100", zone.Attribute("ulx")?.Value);
         Assert.Equal("50", zone.Attribute("uly")?.Value);
@@ -122,16 +124,18 @@ public sealed class ChgcTeiItemComposerTest
         // zone 1 svg
         XElement? svg = zone!.Element(ChgcTeiItemComposer.SVG_NS + "svg");
         Assert.NotNull(svg);
-        Assert.Equal("100", svg!.Attribute("x")?.Value);
-        Assert.Equal("50", svg!.Attribute("y")?.Value);
-        Assert.Equal("130", svg!.Attribute("width")?.Value);
-        Assert.Equal("70", svg!.Attribute("height")?.Value);
+        XElement? rect = svg.Element(ChgcTeiItemComposer.SVG_NS + "rect");
+        Assert.NotNull(rect);
+        Assert.Equal("100", rect!.Attribute("x")?.Value);
+        Assert.Equal("50", rect!.Attribute("y")?.Value);
+        Assert.Equal("130", rect!.Attribute("width")?.Value);
+        Assert.Equal("70", rect!.Attribute("height")?.Value);
 
         // surface/zone 2
         zone = surface!.Elements().Last();
         Assert.NotNull(zone);
         Assert.Equal("zone", zone.Name.LocalName);
-        Assert.Equal(part.Annotations[1].Id,
+        Assert.StartsWith("z-",
             zone.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1/n-abacuc", zone.Attribute("n")?.Value);
         Assert.Equal("350", zone.Attribute("ulx")?.Value);
@@ -154,7 +158,7 @@ public sealed class ChgcTeiItemComposerTest
             .Element(ChgcTeiItemComposer.TEI_NS + "body")!
             .Element(ChgcTeiItemComposer.TEI_NS + "pb");
         Assert.NotNull(pb);
-        Assert.Equal("#" + item.Id,
+        Assert.StartsWith("p-",
             pb.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1", pb.Attribute("n")?.Value);
 
@@ -164,7 +168,7 @@ public sealed class ChgcTeiItemComposerTest
             .Elements(ChgcTeiItemComposer.TEI_NS + "div")
             .FirstOrDefault();
         Assert.NotNull(div);
-        Assert.Equal(part.Annotations[0].Id,
+        Assert.Equal("a-" + part.Annotations[0].Id[1..],
             div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("node", div.Attribute("type")?.Value);
         Assert.Equal("#" + part.Annotations[0].Eid,
@@ -177,7 +181,7 @@ public sealed class ChgcTeiItemComposerTest
             .Elements(ChgcTeiItemComposer.TEI_NS + "div")
             .LastOrDefault();
         Assert.NotNull(div);
-        Assert.Equal(part.Annotations[1].Id, 
+        Assert.Equal("a-" + part.Annotations[1].Id[1..], 
             div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("node", div.Attribute("type")?.Value);
         Assert.Equal("#" + part.Annotations[1].Eid,
@@ -242,7 +246,7 @@ public sealed class ChgcTeiItemComposerTest
         XElement? surface = facsimile!.Element(
             ChgcTeiItemComposer.TEI_NS + "surface");
         Assert.NotNull(surface);
-        Assert.Equal("#" + item.Id, surface!
+        Assert.Equal("i-" + item.Id, surface!
             .Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1", surface!.Attribute("n")?.Value);
         Assert.Equal(part.Image!.Uri, surface!.Attribute("source")?.Value);
@@ -266,7 +270,7 @@ public sealed class ChgcTeiItemComposerTest
         XElement? div = body!.Elements(ChgcTeiItemComposer.TEI_NS + "div")
             .FirstOrDefault();
         Assert.NotNull(div);
-        Assert.Equal($"{part.Annotations[0].Id} {part.Annotations[2].Id}",
+        Assert.Equal($"a-{part.Annotations[0].Id[1..]} a-{part.Annotations[2].Id[1..]}",
             div!.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("node", div!.Attribute("type")?.Value);
         Assert.Equal("#n-aaron", div!.Attribute("corresp")?.Value);
@@ -277,7 +281,7 @@ public sealed class ChgcTeiItemComposerTest
         div = body!.Elements(ChgcTeiItemComposer.TEI_NS + "div")
             .LastOrDefault();
         Assert.NotNull(div);
-        Assert.Equal(part.Annotations[1].Id, 
+        Assert.Equal("a-" + part.Annotations[1].Id[1..], 
             div!.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("node", div!.Attribute("type")?.Value);
         Assert.Equal("#" + part.Annotations[1].Eid,
@@ -360,7 +364,7 @@ public sealed class ChgcTeiItemComposerTest
         XElement? zone = surface!.Elements().First();
         Assert.NotNull(zone);
         Assert.Equal("zone", zone.Name.LocalName);
-        Assert.Equal(part.Annotations[0].Id,
+        Assert.StartsWith("z-",
             zone.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1/n-aaron", zone.Attribute("n")?.Value);
         Assert.Equal("100", zone.Attribute("ulx")?.Value);
@@ -371,16 +375,18 @@ public sealed class ChgcTeiItemComposerTest
         // zone 1 svg
         XElement? svg = zone!.Element(ChgcTeiItemComposer.SVG_NS + "svg");
         Assert.NotNull(svg);
-        Assert.Equal("100", svg!.Attribute("x")?.Value);
-        Assert.Equal("50", svg!.Attribute("y")?.Value);
-        Assert.Equal("130", svg!.Attribute("width")?.Value);
-        Assert.Equal("70", svg!.Attribute("height")?.Value);
+        XElement? rect = svg.Element(ChgcTeiItemComposer.SVG_NS + "rect");
+        Assert.NotNull(rect);
+        Assert.Equal("100", rect!.Attribute("x")?.Value);
+        Assert.Equal("50", rect!.Attribute("y")?.Value);
+        Assert.Equal("130", rect!.Attribute("width")?.Value);
+        Assert.Equal("70", rect!.Attribute("height")?.Value);
 
         // surface/zone 2
         zone = surface!.Elements().Skip(1).FirstOrDefault();
         Assert.NotNull(zone);
         Assert.Equal("zone", zone.Name.LocalName);
-        Assert.Equal("#af35f367-a921-4af3-bb84-4911cbc82a53",
+        Assert.StartsWith("z-",
             zone.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1/n-abacuc", zone.Attribute("n")?.Value);
         Assert.Equal("350", zone.Attribute("ulx")?.Value);
@@ -402,7 +408,7 @@ public sealed class ChgcTeiItemComposerTest
         zone = surface!.Elements().ElementAt(2);
         Assert.NotNull(zone);
         Assert.Equal("zone", zone.Name.LocalName);
-        Assert.Equal(part.Annotations[1].Id,
+        Assert.StartsWith("z-",
             zone.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1/n-eve", zone.Attribute("n")?.Value);
         Assert.Equal("350", zone.Attribute("ulx")?.Value);
@@ -415,7 +421,7 @@ public sealed class ChgcTeiItemComposerTest
             .Element(ChgcTeiItemComposer.TEI_NS + "body")!
             .Element(ChgcTeiItemComposer.TEI_NS + "pb");
         Assert.NotNull(pb);
-        Assert.Equal("#" + item.Id,
+        Assert.StartsWith("p-",
             pb.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("ccc-ms029/1", pb.Attribute("n")?.Value);
 
@@ -425,7 +431,7 @@ public sealed class ChgcTeiItemComposerTest
             .Elements(ChgcTeiItemComposer.TEI_NS + "div")
             .FirstOrDefault();
         Assert.NotNull(div);
-        Assert.Equal(part.Annotations[0].Id,
+        Assert.Equal("a-" + part.Annotations[0].Id[1..],
             div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("node", div.Attribute("type")?.Value);
         Assert.Equal("#" + part.Annotations[0].Eid,
@@ -438,7 +444,7 @@ public sealed class ChgcTeiItemComposerTest
             .Elements(ChgcTeiItemComposer.TEI_NS + "div")
             .Skip(1).FirstOrDefault();
         Assert.NotNull(div);
-        Assert.Equal("#af35f367-a921-4af3-bb84-4911cbc82a53",
+        Assert.Equal("a-af35f367-a921-4af3-bb84-4911cbc82a53",
             div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("node", div.Attribute("type")?.Value);
         Assert.Equal("#n-abacuc", div.Attribute("corresp")?.Value);
@@ -450,7 +456,7 @@ public sealed class ChgcTeiItemComposerTest
             .Elements(ChgcTeiItemComposer.TEI_NS + "div")
             .LastOrDefault();
         Assert.NotNull(div);
-        Assert.Equal(part.Annotations[1].Id,
+        Assert.Equal("a-" + part.Annotations[1].Id[1..],
             div.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal("node", div.Attribute("type")?.Value);
         Assert.Equal("#" + part.Annotations[1].Eid,
