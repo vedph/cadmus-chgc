@@ -21,7 +21,7 @@ Cadmus modeling is based on macro-records, named _items_, built of components na
 
 In our case, items are manuscript pages; and parts are the annotations on top of each page's image. So you end up with a list of pages, grouped into manuscripts by their group ID; and inside each page you have an object representing its visual annotations. The typical process is selecting a page, editing its annotations part, and saving it when done. At any moment you can then export TEI, both from the web UI or from a dedicated CLI tool, and the same is true for data imports.
 
-As this project uses Cadmus only as a mean of annotating images with an additional set of essential metadata. So, the only project-specific component is the `ChgcImageAnnotationsPart` part.
+This project uses Cadmus only as a mean of annotating images with an additional set of essential metadata. So, the only project-specific component is the `ChgcImageAnnotationsPart` part.
 
 ## ChgcImageAnnotationsPart
 
