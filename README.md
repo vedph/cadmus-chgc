@@ -203,7 +203,7 @@ A sample output follows, from a single item (page) having 2 annotations, the fir
 
 ### Import TEI Command
 
-🎯 Import TEI documents into a CHGC database, where each document contains a `TEI/facsimile` element including as many `surface` elements as the pages to import. This is used to create in advance the items representing all the pages of a given manuscript, each TEI document corresponding to a single manuscript.
+🎯 Import TEI documents into a CHGC database, where each document contains a `TEI` root with the TEI namespace as the default document namespace, and containing a `facsimile` element including as many `surface` elements as the pages to import. This is used to create in advance the items representing all the pages of a given manuscript, each TEI document corresponding to a single manuscript.
 
 It is assumed that the TEI file name is equal to the manuscript ID; this will become the group ID of the imported items.
 
@@ -240,26 +240,28 @@ https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/d
 
 In this case, the first group of the match will be `029_vi_R_TC_46`, which will be used as the shortened URI.
 
-Example `facsimile` element:
+👉 Example import file:
 
 ```xml
-<facsimile xmlns="http://www.tei-c.org/ns/1.0">
-  <surface n="6r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/full/0/default.jpg"> 
-  </surface>
-  <surface n="6v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_V_TC_46/full/full/0/default.jpg"/>
-  <surface n="7r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_R_TC_46/full/full/0/default.jpg"/>
-  <surface n="7v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_V_TC_46/full/full/0/default.jpg"/>
-  <surface n="8r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_R_TC_46/full/full/0/default.jpg"/>
-  <surface n="8v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_V_TC_46/full/full/0/default.jpg"/>
-  <surface n="9r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_R_TC_46/full/full/0/default.jpg"/>
-  <surface n="9v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_V_TC_46/full/full/0/default.jpg"/>
-  <surface n="10r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_R_TC_46/full/full/0/default.jpg"/>
-  <surface n="10v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_V_TC_46/full/full/0/default.jpg"/>
-  <surface n="11r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_xi_R_TC_46/full/full/0/default.jpg"/>
-</facsimile>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <facsimile>
+    <surface n="6r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/default.jpg"> 
+    </surface>
+    <surface n="6v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="7r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="7v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="8r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="8v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="9r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="9v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="10r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="10v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface n="11r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_xi_R_TC_46/full/1024,/0/default.jpg"/>
+  </facsimile>
+</TEI>
 ```
 
->⚠️ Please notice that the `facsimile` element and its descendants must be inside the TEI namespace! So remember to include the `xmlns` attribute in it, as in the above example.
+>⚠️ Please notice that the `facsimile` element and its descendants must be inside the TEI namespace! So remember to include the `xmlns` attribute in the root `TEI` element, as in the above example.
 
 ## History
 
