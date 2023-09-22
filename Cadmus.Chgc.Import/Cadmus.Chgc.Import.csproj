@@ -14,13 +14,13 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
 		<PackageTags>Cadmus;export</PackageTags>
-		<Version>2.1.5</Version>
-		<FileVersion>2.1.5</FileVersion>
-		<AssemblyVersion>2.1.5</AssemblyVersion>
+		<Version>2.1.8</Version>
+		<FileVersion>2.1.8</FileVersion>
+		<AssemblyVersion>2.1.8</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Cadmus.Index" Version="6.1.16" />
+	  <PackageReference Include="Cadmus.Index" Version="6.1.18" />
 	</ItemGroup>
 
 	<ItemGroup>

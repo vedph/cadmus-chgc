@@ -359,6 +359,9 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     {
         if (item is null) throw new ArgumentNullException(nameof(item));
 
+        // there must be a group ID
+        if (CurrentGroupId == null) return;
+
         // get image annotations part
         ChgcImageAnnotationsPart? part = item.Parts
             .OfType<ChgcImageAnnotationsPart>().FirstOrDefault();

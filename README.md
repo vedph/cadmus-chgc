@@ -243,7 +243,7 @@ In this case, the first group of the match will be `029_vi_R_TC_46`, which will 
 Example `facsimile` element:
 
 ```xml
-<facsimile>
+<facsimile xmlns="http://www.tei-c.org/ns/1.0">
   <surface n="6r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/full/0/default.jpg"> 
   </surface>
   <surface n="6v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_V_TC_46/full/full/0/default.jpg"/>
@@ -258,6 +258,8 @@ Example `facsimile` element:
   <surface n="11r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_xi_R_TC_46/full/full/0/default.jpg"/>
 </facsimile>
 ```
+
+>⚠️ Please notice that the `facsimile` element and its descendants must be inside the TEI namespace! So remember to include the `xmlns` attribute in it, as in the above example.
 
 ## History
 
