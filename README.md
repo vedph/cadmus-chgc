@@ -104,7 +104,7 @@ here, `geometry-attributes` are:
       n="IMAGE_HID"
       source="i-ITEM_GUID"/>
   <!-- a div for each annotation, merged if sharing the same ENTITY_ID; type is node, text, diagram, picture, group, connection -->
-  <div xml:id="a-GUID"
+  <div xml:id="d-GUID"
        source="ANNOTATION_GUID ..."
        type="node"
        corresp="#ENTITY_ID"
@@ -170,14 +170,14 @@ A sample output follows, from a single item (page) having 2 annotations, the fir
   <text>
     <body>
       <pb xml:id="p-87210ce5-aaa4-4d64-8cd4-57fa15418104" n="ccc-ms029/1" source="i-cb8f536b-e042-413e-9e54-8b402d2f4b1d" />
-      <div xml:id="a-ba853490-d778-4f81-aeda-cb029374f201" source="a-ba853490-d778-4f81-aeda-cb029374f201" type="node" corresp="#n-aaron" facs="#ccc-ms029/1/n-aaron">
+      <div xml:id="d-8887f7d9-d9cf-4010-a16c-8e40347c678e" source="a-ba853490-d778-4f81-aeda-cb029374f201" type="node" corresp="#n-aaron" facs="#ccc-ms029/1/n-aaron">
         <ab type="label">Aaron</ab>
         <note>
           <p>A note about Aaron.</p>
           <p>This is the second paragraph.</p>
         </note>
       </div>
-      <div xml:id="a-22af5bee-3981-4edc-85b9-ca3288105f03" source="a-22af5bee-3981-4edc-85b9-ca3288105f03" type="node" corresp="#n-abacuc" facs="#ccc-ms029/1/n-abacuc">
+      <div xml:id="d-3476877a-ae7d-4609-8fa3-6d22b1073696" source="a-22af5bee-3981-4edc-85b9-ca3288105f03" type="node" corresp="#n-abacuc" facs="#ccc-ms029/1/n-abacuc">
         <ab type="label">Abacuc</ab>
       </div>
     </body>
