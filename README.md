@@ -9,15 +9,15 @@ Essentially here we use the open-ended content creation system Cadmus to allow u
 
 So, there is a totally independent software tool whose task is letting users annotate images. It has its own database, and lives on a server connected to the web. You just point your browser to the login page, enter the application, and work on it.
 
-On the compendium project end, there are 3 inputs for the software:
+On the _Compendium_ project end, there are 3 inputs for the software:
 
 - the IIIF URIs for images; there is typically one for each manuscript;
-- the pages of each manuscript. Rather than having users manually create each page in the cadmus system, we massively import all the pages definitions from a simple XML file. This provides a skeleton ready to be filled with data;
+- the pages of each manuscript. Rather than having users manually create each page in the Cadmus system, we massively import all the pages definitions from a simple XML file. This provides a skeleton ready to be filled with data;
 - the authoritative list of entities, which will appear in the annotations to represent the various characters involved in the genalogy.
 
-Once these resources have been imported, you are free to use cadmus to annotate images at will. Everything is saved in its own database. When you are ready, you can generate a full TEI document for a manuscript, or patch an existing one by just updating the visual annotations in it. You can also re-import the authoritative list if needed.
+Once these resources have been imported, you are free to use Cadmus to annotate images at will. Everything is saved in its own database. When you are ready, you can generate a full TEI document for a manuscript, or patch an existing one by just updating the visual annotations in it. You can also re-import the authoritative list if needed.
 
-Cadmus modeling is based on macro-records, named *items*, built of components named *parts*. You can think of items as boxes, and of parts as objects put into them. This allows open and dynamic modeling, because items models are just the sum of the parts they include; add a new part, and get a new model.
+Cadmus modeling is based on macro-records, named _items_, built of components named _parts_. You can think of items as boxes, and of parts as objects put into them. This allows open and dynamic modeling, because items models are just the sum of the parts they include; add a new part, and get a new model.
 
 In our case, items are manuscript pages; and parts are the annotations on top of each page's image. So you end up with a list of pages, grouped into manuscripts by their group ID; and inside each page you have an object representing its visual annotations. The typical process is selecting a page, editing its annotations part, and saving it when done. At any moment you can then export TEI, both from the web UI or from a dedicated CLI tool, and the same is true for data imports.
 
