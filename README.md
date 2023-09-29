@@ -206,7 +206,7 @@ For each `surface` element, an item will be created with these data:
 
 - facet ID = "image";
 - group ID = the TEI file name (without extension);
-- title = group ID + surface ID;
+- title = surface ID;
 - description = surface ID: image uri;
 - flags = 1 (=imported);
 - creator ID and user ID = `zeus`;
@@ -240,18 +240,18 @@ In this case, the first group of the match will be `029_vi_R_TC_46`, which will 
 ```xml
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <facsimile>
-    <surface xml:id="006r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/default.jpg"> 
+    <surface xml:id="ccc-ms029-006r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_R_TC_46/full/1024,/0/default.jpg"> 
     </surface>
-    <surface xml:id="006v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_V_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="007r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_R_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="007v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_V_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="008r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_R_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="008v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_V_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="009r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_R_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="009v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_V_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="010r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_R_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="010v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_V_TC_46/full/1024,/0/default.jpg"/>
-    <surface xml:id="011r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_xi_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-006v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vi_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-007r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-007v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_vii_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-008r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-008v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_viii_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-009r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-009v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_ix_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-010r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_R_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-010v" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_x_V_TC_46/full/1024,/0/default.jpg"/>
+    <surface xml:id="ccc-ms029-011r" source="https://stacks.stanford.edu/image/iiif/xj710dc7305/029_xi_R_TC_46/full/1024,/0/default.jpg"/>
   </facsimile>
 </TEI>
 ```
