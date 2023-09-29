@@ -348,13 +348,6 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             .Any(s => CompareIdsWithoutSuffix(s, id));
     }
 
-    private static string? ParseHumanFriendlyId(string title)
-    {
-        // title is {groupId} {id}
-        int i = title.LastIndexOf(' ');
-        return i == -1 ? null : title[(i + 1)..];
-    }
-
     /// <summary>
     /// Does the composition for the specified item.
     /// </summary>
@@ -386,9 +379,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         // (a) surface: image has a corresponding facsimile/surface with:
         // - @id = human-friendly ID from item's title
         // - @source = image URI
-        string? surfaceId = ParseHumanFriendlyId(item.Title) ??
-            throw new InvalidOperationException("Expected human-friendly ID " +
-                $"in item's title: {item.Title}");
+        string? surfaceId = item.Title;
 
         string friendlyImageId = $"{CurrentGroupId}/" +
             part.Annotations[0].Target!.Id;

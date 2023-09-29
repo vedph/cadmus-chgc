@@ -260,6 +260,8 @@ In this case, the first group of the match will be `029_vi_R_TC_46`, which will 
 
 ## History
 
+- 2029-09-29: changed imported item title to be equal to just the surface ID.
+
 ### 2.1.9
 
 - 2023-09-29: changed import/export so that they use `surface @xml:id`.

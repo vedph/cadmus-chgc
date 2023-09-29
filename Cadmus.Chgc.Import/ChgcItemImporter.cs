@@ -83,7 +83,7 @@ public class ChgcItemImporter
         {
             n++;
             // the (human-friendly page) ID will be used to identify the surface
-            // in import/export, as it becomes part of the title
+            // in import/export, as it becomes the title
             string? id = (surface.Attribute(XML_NS + "id")?.Value ??
                 throw new InvalidOperationException(
                     $"Missing ID attribute in surface {n}"));
@@ -99,7 +99,7 @@ public class ChgcItemImporter
             {
                 FacetId = FACET_ID,
                 GroupId = groupId,
-                Title = $"{groupId} {id}",
+                Title = id,
                 Description = $"{id}: {shortenedUri}".TrimEnd(),
                 Flags = 1,  // = imported
                 CreatorId = "zeus",
@@ -119,8 +119,8 @@ public class ChgcItemImporter
                     {
                         Id = $"{n}",
                         Uri = uri,
-                        Title = $"{groupId}: {id}",
-                        Description = id,
+                        Title = id,
+                        Description = $"{groupId}: {id}",
                     }
                 };
                 item.Parts.Add(part);
