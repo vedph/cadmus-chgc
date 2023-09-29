@@ -14,7 +14,7 @@ public sealed class ChgcTeiItemComposerTest
     {
         IItem item = new Item
         {
-            Title = "Sample",
+            Title = "ccc-ms029 001r",
             Description = "Sample item",
             FacetId = "default",
             CreatorId = "zeus",
@@ -99,9 +99,8 @@ public sealed class ChgcTeiItemComposerTest
         XElement? surface = facsimile!.Element(
             ChgcTeiItemComposer.TEI_NS + "surface");
         Assert.NotNull(surface);
-        Assert.Equal("i-" + item.Id, surface!
-            .Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
-        Assert.Equal("ccc-ms029/1", surface!.Attribute("n")?.Value);
+        Assert.Equal("001r",
+            surface!.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal(part.Image!.Uri, surface!.Attribute("source")?.Value);
 
         // surface has 2 zones
@@ -246,9 +245,8 @@ public sealed class ChgcTeiItemComposerTest
         XElement? surface = facsimile!.Element(
             ChgcTeiItemComposer.TEI_NS + "surface");
         Assert.NotNull(surface);
-        Assert.Equal("i-" + item.Id, surface!
-            .Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
-        Assert.Equal("ccc-ms029/1", surface!.Attribute("n")?.Value);
+        Assert.Equal("001r",
+            surface!.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal(part.Image!.Uri, surface!.Attribute("source")?.Value);
 
         // surface has 3 zones
@@ -352,9 +350,8 @@ public sealed class ChgcTeiItemComposerTest
         XElement? surface = facsimile!.Element(
             ChgcTeiItemComposer.TEI_NS + "surface");
         Assert.NotNull(surface);
-        Assert.Equal("i-" + item.Id, surface!
-            .Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
-        Assert.Equal("ccc-ms029/1", surface!.Attribute("n")?.Value);
+        Assert.Equal("001r",
+            surface!.Attribute(ChgcTeiItemComposer.XML_NS + "id")?.Value);
         Assert.Equal(part.Image!.Uri, surface!.Attribute("source")?.Value);
 
         // surface has 3 zones

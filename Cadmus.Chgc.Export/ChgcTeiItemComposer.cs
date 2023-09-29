@@ -348,6 +348,13 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             .Any(s => CompareIdsWithoutSuffix(s, id));
     }
 
+    private static string? ParseHumanFriendlyId(string title)
+    {
+        // title is {groupId} {id}
+        int i = title.LastIndexOf(' ');
+        return i == -1 ? null : title[(i + 1)..];
+    }
+
     /// <summary>
     /// Does the composition for the specified item.
     /// </summary>
@@ -377,21 +384,23 @@ public abstract class ChgcTeiItemComposer : ItemComposer
             ?? throw new InvalidOperationException("Expected body element");
 
         // (a) surface: image has a corresponding facsimile/surface with:
-        // - @id = i- + item GUID
-        // - @n = friendly ID
+        // - @id = human-friendly ID from item's title
         // - @source = image URI
-        string prefixedItemId = "i-" + item.Id;
+        string? surfaceId = ParseHumanFriendlyId(item.Title) ??
+            throw new InvalidOperationException("Expected human-friendly ID " +
+                $"in item's title: {item.Title}");
+
         string friendlyImageId = $"{CurrentGroupId}/" +
             part.Annotations[0].Target!.Id;
 
         // reuse surface if exists, else create it
         XElement? surface = facs.Elements(TEI_NS + "surface").FirstOrDefault(
-            e => e.Attribute(XML_NS + "id")?.Value == prefixedItemId);
+            e => e.Attribute(XML_NS + "id")?.Value == surfaceId);
         if (surface == null)
         {
             surface = new(TEI_NS + "surface",
-                new XAttribute(XML_NS + "id", prefixedItemId),
-                new XAttribute("n", friendlyImageId),
+                new XAttribute(XML_NS + "id", surfaceId),
+                // new XAttribute("n", friendlyImageId),
                 new XAttribute("source", part.Image.Uri));
             InsertInOrder(facs, surface, "n");
         }
@@ -402,13 +411,13 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         // - @n = friendly ID
         // reuse pb if exists, else create it
         XElement? pb = body.Elements(TEI_NS + "pb").FirstOrDefault(
-            e => e.Attribute("source")?.Value == prefixedItemId);
+            e => e.Attribute("source")?.Value == surfaceId);
         if (pb == null)
         {
             pb = new XElement(TEI_NS + "pb",
                 new XAttribute(XML_NS + "id", "p-" + Guid.NewGuid().ToString()),
                 new XAttribute("n", friendlyImageId),
-                new XAttribute("source", prefixedItemId));
+                new XAttribute("source", surfaceId));
             InsertInOrder(body, pb, "n");
         }
 

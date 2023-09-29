@@ -82,9 +82,11 @@ public class ChgcItemImporter
         foreach (XElement surface in facsimile.Elements(TEI_NS + "surface"))
         {
             n++;
-            string? page = (surface.Attribute("n")?.Value) ??
+            // the (human-friendly page) ID will be used to identify the surface
+            // in import/export, as it becomes part of the title
+            string? id = (surface.Attribute(XML_NS + "id")?.Value ??
                 throw new InvalidOperationException(
-                    $"Missing page number in surface {n}");
+                    $"Missing ID attribute in surface {n}"));
             string? uri = (surface.Attribute("source")?.Value) ??
                 throw new InvalidOperationException(
                     $"Missing source URI in surface {n}");
@@ -97,8 +99,8 @@ public class ChgcItemImporter
             {
                 FacetId = FACET_ID,
                 GroupId = groupId,
-                Title = $"{groupId} {n:000} {page}",
-                Description = $"{page}: {shortenedUri}".TrimEnd(),
+                Title = $"{groupId} {id}",
+                Description = $"{id}: {shortenedUri}".TrimEnd(),
                 Flags = 1,  // = imported
                 CreatorId = "zeus",
                 UserId = "zeus",
@@ -117,8 +119,8 @@ public class ChgcItemImporter
                     {
                         Id = $"{n}",
                         Uri = uri,
-                        Title = $"{groupId}: {page}",
-                        Description = page,
+                        Title = $"{groupId}: {id}",
+                        Description = id,
                     }
                 };
                 item.Parts.Add(part);
