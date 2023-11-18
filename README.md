@@ -260,6 +260,9 @@ In this case, the first group of the match will be `029_vi_R_TC_46`, which will 
 
 ## History
 
+### 3.0.0
+
+- 2023-11-18: ⚠️ Upgraded to .NET 8.
 - 2029-09-29: changed imported item title to be equal to just the surface ID.
 
 ### 2.1.9
