@@ -69,8 +69,8 @@ public static class SelectorXmlConverter
     /// <exception cref="ArgumentException">Invalid selector</exception>
     public static void Convert(string selector, XElement target)
     {
-        if (selector is null) throw new ArgumentNullException(nameof(selector));
-        if (target is null) throw new ArgumentNullException(nameof(target));
+        ArgumentNullException.ThrowIfNull(selector);
+        ArgumentNullException.ThrowIfNull(target);
 
         // rectangle
         if (selector.StartsWith("xywh=pixel:", StringComparison.Ordinal))

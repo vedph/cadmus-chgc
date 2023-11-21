@@ -68,7 +68,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// <exception cref="ArgumentNullException">root</exception>
     protected void AddHeader(XElement root)
     {
-        if (root is null) throw new ArgumentNullException(nameof(root));
+        ArgumentNullException.ThrowIfNull(root);
 
         root.Add(new XElement(TEI_NS + "teiHeader",
             new XElement(TEI_NS + "fileDesc",
@@ -122,7 +122,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// <exception cref="ArgumentNullException">doc</exception>
     protected void SetupOutput(XDocument doc)
     {
-        if (doc is null) throw new ArgumentNullException(nameof(doc));
+        ArgumentNullException.ThrowIfNull(doc);
 
         // ensure root TEI element exists
         if (doc.Root == null) doc.Add(new XElement(TEI_NS + "TEI"));
@@ -295,9 +295,9 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     public static void InsertInOrder(XElement parent, XElement element,
         XName attrName, XElement? childA = null, XElement? childB = null)
     {
-        if (parent is null) throw new ArgumentNullException(nameof(parent));
-        if (element is null) throw new ArgumentNullException(nameof(element));
-        if (attrName is null) throw new ArgumentNullException(nameof(attrName));
+        ArgumentNullException.ThrowIfNull(parent);
+        ArgumentNullException.ThrowIfNull(element);
+        ArgumentNullException.ThrowIfNull(attrName);
 
         string newA = element.Attribute(attrName)?.Value ?? "";
 
@@ -357,7 +357,7 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// element or expected body element.</exception>
     protected override void DoCompose(IItem item)
     {
-        if (item is null) throw new ArgumentNullException(nameof(item));
+        ArgumentNullException.ThrowIfNull(item);
 
         // there must be a group ID
         if (CurrentGroupId == null) return;

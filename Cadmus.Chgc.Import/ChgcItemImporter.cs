@@ -66,8 +66,8 @@ public class ChgcItemImporter
     /// surface {n}, or Missing source URI in surface {n}.</exception>
     public int Import(string groupId, XDocument doc)
     {
-        if (groupId is null) throw new ArgumentNullException(nameof(groupId));
-        if (doc is null) throw new ArgumentNullException(nameof(doc));
+        ArgumentNullException.ThrowIfNull(groupId);
+        ArgumentNullException.ThrowIfNull(doc);
 
         XElement? facsimile = doc.Root?.Element(TEI_NS + "facsimile");
         if (facsimile == null) return 0;
