@@ -260,6 +260,8 @@ In this case, the first group of the match will be `029_vi_R_TC_46`, which will 
 
 ## History
 
+- 2024-12-27: updated test and CLI packages.
+
 ### 4.0.0
 
 - 2024-11-30: ⚠️ upgraded to .NET 9.
