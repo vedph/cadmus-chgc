@@ -260,6 +260,9 @@ In this case, the first group of the match will be `029_vi_R_TC_46`, which will 
 
 ## History
 
+### 4.0.1
+
+- 2025-01-30: updated packages.
 - 2024-12-27: updated test and CLI packages.
 
 ### 4.0.0
