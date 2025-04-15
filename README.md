@@ -1,6 +1,6 @@
 # Cadmus CHGC Core
 
-Components specific to the Cadmus CHGC Project.
+Components specific to the Cadmus CHGC (*Compendium historiae in genealogia Christi* by Peter of Poitiers) project.
 
 - [API](https://github.com/vedph/cadmus-chgc-api)
 - [app](https://github.com/vedph/cadmus-chgc-app)
