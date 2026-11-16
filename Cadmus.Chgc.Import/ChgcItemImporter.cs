@@ -6,6 +6,7 @@ using Cadmus.Index;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Cadmus.Chgc.Import;
@@ -64,7 +65,7 @@ public class ChgcItemImporter
     /// <exception cref="ArgumentNullException">groupId or doc</exception>
     /// <exception cref="InvalidOperationException">Missing page number in
     /// surface {n}, or Missing source URI in surface {n}.</exception>
-    public int Import(string groupId, XDocument doc)
+    public async Task<int> ImportAsync(string groupId, XDocument doc)
     {
         ArgumentNullException.ThrowIfNull(groupId);
         ArgumentNullException.ThrowIfNull(doc);
@@ -95,7 +96,7 @@ public class ChgcItemImporter
                 ? uri
                 : UriShortenerPattern.Replace(uri, "$1");
 
-            IItem item = new Item
+            Item item = new()
             {
                 FacetId = FACET_ID,
                 GroupId = groupId,
@@ -131,8 +132,8 @@ public class ChgcItemImporter
                 // index if any
                 if (_indexWriter != null)
                 {
-                    _indexWriter.WriteItem(item);
-                    _indexWriter.WritePart(item, part);
+                    await _indexWriter.WriteItemAsync(item);
+                    await _indexWriter.WritePartAsync(item, part);
                 }
 
                 added++;

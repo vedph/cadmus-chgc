@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="CHANGELOG.md" />
+    <File Path="Pack.bat" />
+    <File Path="Push.bat" />
+    <File Path="PushLocal.bat" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Cadmus.Chgc.Export.Test/Cadmus.Chgc.Export.Test.csproj" />
+  <Project Path="Cadmus.Chgc.Export/Cadmus.Chgc.Export.csproj" />
+  <Project Path="Cadmus.Chgc.Import/Cadmus.Chgc.Import.csproj" />
+  <Project Path="Cadmus.Chgc.Parts.Test/Cadmus.Chgc.Parts.Test.csproj" />
+  <Project Path="Cadmus.Chgc.Parts/Cadmus.Chgc.Parts.csproj" />
+  <Project Path="Cadmus.Chgc.Services/Cadmus.Chgc.Services.csproj" />
+  <Project Path="chgc/chgc.csproj" />
+</Solution>

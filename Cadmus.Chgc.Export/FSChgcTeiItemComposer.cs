@@ -2,6 +2,7 @@
 using Cadmus.Export;
 using Fusi.Tools.Configuration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,15 @@ public sealed class FSChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer,
 {
     private FSChgcTeiItemComposerOptions? _options;
     private XDocument? _doc;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FSChgcTeiItemComposer"/>
+    /// class.
+    /// </summary>
+    [SetsRequiredMembers]
+    public FSChgcTeiItemComposer()
+    {
+    }
 
     /// <summary>
     /// Configures the object with the specified options.

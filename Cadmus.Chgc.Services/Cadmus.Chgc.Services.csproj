@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net11.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<IncludeSymbols>true</IncludeSymbols>
@@ -14,18 +14,18 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
 		<PackageTags>Cadmus;parts</PackageTags>
-		<Version>4.0.1</Version>
-		<FileVersion>4.0.1</FileVersion>
-		<AssemblyVersion>4.0.1</AssemblyVersion>
+		<Version>5.0.0</Version>
+		<FileVersion>5.0.0</FileVersion>
+		<AssemblyVersion>5.0.0</AssemblyVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Cadmus.Core" Version="8.0.4" />
-		<PackageReference Include="Cadmus.General.Parts" Version="7.0.2" />
-		<PackageReference Include="Cadmus.Mongo" Version="8.0.4" />
-		<PackageReference Include="Cadmus.Philology.Parts" Version="9.0.2" />
-		<PackageReference Include="Cadmus.Seed.General.Parts" Version="7.0.2" />
-		<PackageReference Include="Cadmus.Seed.Philology.Parts" Version="9.0.2" />
-		<PackageReference Include="Fusi.Microsoft.Extensions.Configuration.InMemoryJson" Version="4.0.0" />
+		<PackageReference Include="Cadmus.Core" Version="18.0.0" />
+		<PackageReference Include="Cadmus.General.Parts" Version="18.0.0" />
+		<PackageReference Include="Cadmus.Mongo" Version="18.0.0" />
+		<PackageReference Include="Cadmus.Philology.Parts" Version="18.0.0" />
+		<PackageReference Include="Cadmus.Seed.General.Parts" Version="18.0.0" />
+		<PackageReference Include="Cadmus.Seed.Philology.Parts" Version="18.0.0" />
+		<PackageReference Include="Fusi.Microsoft.Extensions.Configuration.InMemoryJson" Version="6.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Cadmus.Chgc.Parts\Cadmus.Chgc.Parts.csproj" />

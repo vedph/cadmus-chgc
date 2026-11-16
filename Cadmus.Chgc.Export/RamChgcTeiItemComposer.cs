@@ -1,6 +1,7 @@
 ﻿using Cadmus.Export;
 using Fusi.Tools.Configuration;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 
 namespace Cadmus.Chgc.Export;
@@ -15,6 +16,15 @@ namespace Cadmus.Chgc.Export;
 [Tag("it.vedph.item-composer.chgc.tei.ram")]
 public sealed class RamChgcTeiItemComposer : ChgcTeiItemComposer, IItemComposer
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RamChgcTeiItemComposer"/>
+    /// class.
+    /// </summary>
+    [SetsRequiredMembers]
+    public RamChgcTeiItemComposer()
+    {
+    }
+
     protected override void EnsureWriter(string key)
     {
         // nope

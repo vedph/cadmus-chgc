@@ -13,7 +13,7 @@ namespace Cadmus.Chgc.Cli.Commands;
 internal sealed class BuildTeiCommand : AsyncCommand<BuildTeiCommandOptions>
 {
     public override Task<int> ExecuteAsync(CommandContext context,
-        BuildTeiCommandOptions settings)
+        BuildTeiCommandOptions settings, CancellationToken cancel)
     {
         AnsiConsole.MarkupLine("[green]BUILD TEI[/]");
         AnsiConsole.MarkupLine($"Output dir: [cyan]{settings.OutputDirectory}[/]");

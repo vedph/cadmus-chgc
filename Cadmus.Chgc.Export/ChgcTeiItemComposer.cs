@@ -6,6 +6,7 @@ using System;
 using Cadmus.Chgc.Parts;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Cadmus.Chgc.Export;
@@ -48,6 +49,17 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// Gets the current group identifier.
     /// </summary>
     public string? CurrentGroupId { get; private set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ChgcTeiItemComposer"/>
+    /// class, setting <see cref="ItemComposer.TextTreeRenderer"/> to a no-op
+    /// renderer, as CHGC TEI does not render text trees.
+    /// </summary>
+    [SetsRequiredMembers]
+    protected ChgcTeiItemComposer()
+    {
+        TextTreeRenderer = new NullCadmusTextTreeRenderer();
+    }
 
     /// <summary>
     /// Invoked when the item's group changed since the last call to
@@ -355,14 +367,13 @@ public abstract class ChgcTeiItemComposer : ItemComposer
     /// <exception cref="ArgumentNullException">item</exception>
     /// <exception cref="InvalidOperationException">Expected facsimile
     /// element or expected body element.</exception>
-    protected override void DoCompose(IItem item)
+    protected override void DoCompose()
     {
-        ArgumentNullException.ThrowIfNull(item);
-
         // there must be a group ID
         if (CurrentGroupId == null) return;
 
         // get image annotations part
+        IItem item = (IItem)Context.Source!;
         ChgcImageAnnotationsPart? part = item.Parts
             .OfType<ChgcImageAnnotationsPart>().FirstOrDefault();
         if (part == null || part.Image == null || part.Annotations.Count == 0)

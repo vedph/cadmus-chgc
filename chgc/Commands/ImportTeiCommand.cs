@@ -13,17 +13,17 @@ namespace Cadmus.Chgc.Cli.Commands;
 
 internal sealed class ImportTeiCommand : AsyncCommand<ImportTeiCommandOptions>
 {
-    public override Task<int> ExecuteAsync(CommandContext context,
-               ImportTeiCommandOptions settings)
+    public override async Task<int> ExecuteAsync(CommandContext context,
+        ImportTeiCommandOptions settings, CancellationToken cancel)
     {
         AnsiConsole.MarkupLine("[red]IMPORT TEI[/]");
         AnsiConsole.MarkupLine($"Input mask: [cyan]{settings.InputFileMask}[/]");
         if (!string.IsNullOrEmpty(settings.DatabaseName))
             AnsiConsole.MarkupLine($"Database: [cyan]{settings.DatabaseName}[/]");
 
-        AnsiConsole.Status()
+        await AnsiConsole.Status()
             .Spinner(Spinner.Known.Ascii)
-            .Start("Importing TEI...", ctx =>
+            .StartAsync("Importing TEI...", async ctx =>
             {
                 // repository
                 AnsiConsole.MarkupLine("Creating data repository...");
@@ -67,13 +67,13 @@ internal sealed class ImportTeiCommand : AsyncCommand<ImportTeiCommandOptions>
                     AnsiConsole.MarkupLine($"Importing [yellow]{path}[/]...");
                     XDocument doc = XDocument.Load(path);
                     string groupId = Path.GetFileNameWithoutExtension(path);
-                    added += importer.Import(groupId, doc);
+                    added += await importer.ImportAsync(groupId, doc);
                 }
 
                 AnsiConsole.MarkupLine("Items imported: [yellow]{0}[/]", added);
             });
 
-        return Task.FromResult(0);
+        return 0;
     }
 }
 
