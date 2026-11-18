@@ -1,12 +1,89 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Cadmus.Chgc.Export;
 
-public static class SelectorXmlConverter
+/// <summary>
+/// Converter from Annotorious selectors to TEI zone attributes and SVG.
+/// A selector is either a W3C media fragment for rectangles
+/// (<c>xywh=pixel:x,y,w,h</c>), or an SVG fragment (<c>&lt;svg&gt;...</c>)
+/// with a polygon, circle, ellipse, rectangle or path. Also, a JSON-serialized
+/// Annotorious V3 rectangle or polygon is accepted, as this is how some versions
+/// of the frontend stored selectors.
+/// </summary>
+public static partial class SelectorXmlConverter
 {
+    private const string NUM = @"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?";
+
+    [GeneratedRegex(@"^\s*rotate\(\s*(" + NUM + @")(?:[\s,]+(" + NUM +
+        @")[\s,]+(" + NUM + @"))?\s*\)\s*$")]
+    private static partial Regex RotateRegex();
+
+    private static string FormatNumber(double value) =>
+        value.ToString("R", CultureInfo.InvariantCulture);
+
+    private static double ParseNumber(string value) =>
+        double.Parse(value, CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Converts a JSON-serialized Annotorious V3 shape into the corresponding
+    /// selector.
+    /// </summary>
+    /// <param name="json">The JSON code.</param>
+    /// <returns>The selector.</returns>
+    /// <exception cref="ArgumentException">Invalid selector</exception>
+    private static string JsonShapeToSelector(string json)
+    {
+        try
+        {
+            using JsonDocument doc = JsonDocument.Parse(json);
+            JsonElement geometry = doc.RootElement.GetProperty("geometry");
+
+            switch (doc.RootElement.GetProperty("type").GetString())
+            {
+                case "RECTANGLE":
+                    double x = geometry.GetProperty("x").GetDouble();
+                    double y = geometry.GetProperty("y").GetDouble();
+                    double w = geometry.GetProperty("w").GetDouble();
+                    double h = geometry.GetProperty("h").GetDouble();
+                    double rot = geometry.TryGetProperty("rot", out JsonElement r)
+                        ? r.GetDouble() : 0;
+
+                    if (rot == 0)
+                    {
+                        return $"xywh=pixel:{FormatNumber(x)},{FormatNumber(y)}," +
+                            $"{FormatNumber(w)},{FormatNumber(h)}";
+                    }
+                    return $"<svg><rect x=\"{FormatNumber(x)}\" " +
+                        $"y=\"{FormatNumber(y)}\" " +
+                        $"width=\"{FormatNumber(w)}\" " +
+                        $"height=\"{FormatNumber(h)}\" " +
+                        $"transform=\"rotate({FormatNumber(rot * 180 / Math.PI)} " +
+                        $"{FormatNumber(x + w / 2)} {FormatNumber(y + h / 2)})\"" +
+                        "></rect></svg>";
+
+                case "POLYGON":
+                    string points = string.Join(" ",
+                        geometry.GetProperty("points").EnumerateArray().Select(
+                            p => FormatNumber(p[0].GetDouble()) + "," +
+                                 FormatNumber(p[1].GetDouble())));
+                    return $"<svg><polygon points=\"{points}\"></polygon></svg>";
+            }
+        }
+        catch (Exception ex) when (ex is JsonException
+            or KeyNotFoundException or InvalidOperationException
+            or IndexOutOfRangeException or FormatException)
+        {
+            throw new ArgumentException("Invalid selector: " + json, ex);
+        }
+        throw new ArgumentException("Invalid selector: " + json);
+    }
+
     private static (double x1, double y1, double x2, double y2)
         GetPolygonBoundingBox(string points)
     {
@@ -34,6 +111,31 @@ public static class SelectorXmlConverter
     {
         // get bounding box from center (cx,cy) and axes (rx, ry)
         return (cx - rx, cy - ry, cx + rx, cy + ry);
+    }
+
+    private static (double x1, double y1, double x2, double y2)
+        GetRectangleBoundingBox(double x, double y, double w, double h,
+        string? transform)
+    {
+        Match m = RotateRegex().Match(transform ?? "");
+        if (!m.Success) return (x, y, x + w, y + h);
+
+        // SVG rotation: the center defaults to the origin
+        double radians = ParseNumber(m.Groups[1].Value) * Math.PI / 180;
+        double cx = m.Groups[2].Success ? ParseNumber(m.Groups[2].Value) : 0;
+        double cy = m.Groups[3].Success ? ParseNumber(m.Groups[3].Value) : 0;
+        double cos = Math.Cos(radians);
+        double sin = Math.Sin(radians);
+
+        (double X, double Y)[] corners =
+        [
+            (x, y), (x + w, y), (x + w, y + h), (x, y + h)
+        ];
+        double[] xs = [.. corners.Select(
+            c => cx + (c.X - cx) * cos - (c.Y - cy) * sin)];
+        double[] ys = [.. corners.Select(
+            c => cy + (c.X - cx) * sin + (c.Y - cy) * cos)];
+        return (xs.Min(), ys.Min(), xs.Max(), ys.Max());
     }
 
     private static void AddBoundingBoxAttrs(double x1, double y1,
@@ -71,6 +173,10 @@ public static class SelectorXmlConverter
     {
         ArgumentNullException.ThrowIfNull(selector);
         ArgumentNullException.ThrowIfNull(target);
+
+        // JSON-serialized Annotorious shape
+        if (selector.StartsWith('{'))
+            selector = JsonShapeToSelector(selector);
 
         // rectangle
         if (selector.StartsWith("xywh=pixel:", StringComparison.Ordinal))
@@ -113,6 +219,32 @@ public static class SelectorXmlConverter
                 // replace SVG (this does not come from Annotorious)
                 target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
                 target.Add(PolygonToSVG(shape.Attribute("points")!.Value));
+                return;
+
+            // rectangle, usually rotated: e.g.
+            // <svg><rect x="10" y="20" width="30" height="40"
+            // transform="rotate(45 25 40)"></rect></svg>
+            // output its bounding rectangle attributes
+            case "rect":
+                double rectX = ParseNumber(shape.Attribute("x")!.Value);
+                double rectY = ParseNumber(shape.Attribute("y")!.Value);
+                double rectW = ParseNumber(shape.Attribute("width")!.Value);
+                double rectH = ParseNumber(shape.Attribute("height")!.Value);
+                string? transform = shape.Attribute("transform")?.Value;
+
+                (double rx1, double ry1, double rx2, double ry2) =
+                    GetRectangleBoundingBox(rectX, rectY, rectW, rectH, transform);
+                AddBoundingBoxAttrs(rx1, ry1, rx2, ry2, target);
+
+                // replace svg
+                target.Element(ChgcTeiItemComposer.SVG_NS + "svg")?.Remove();
+                XElement svgRect = RectangleToSVG(rectX, rectY, rectW, rectH);
+                if (transform != null)
+                {
+                    svgRect.Elements().First().SetAttributeValue(
+                        "transform", transform);
+                }
+                target.Add(svgRect);
                 return;
 
             // circle: e.g.
@@ -175,7 +307,7 @@ public static class SelectorXmlConverter
                 target.Add(
                     new XElement(ChgcTeiItemComposer.SVG_NS + "svg",
                         new XElement(ChgcTeiItemComposer.SVG_NS + "path",
-                            new XAttribute("d", selector))));
+                            new XAttribute("d", shape.Attribute("d")!.Value))));
                 break;
         }
     }

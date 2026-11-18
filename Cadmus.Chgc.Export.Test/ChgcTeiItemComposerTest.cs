@@ -52,6 +52,33 @@ public sealed class ChgcTeiItemComposerTest
         Assert.NotNull(doc.Root.Element(ChgcTeiItemComposer.TEI_NS + "text"));
     }
 
+    [Theory]
+    [InlineData("36c9730c-a7c9-4a28-8889-8d6015ee14fe")]
+    [InlineData("#36c9730c-a7c9-4a28-8889-8d6015ee14fe")]
+    public void Compose_AnnotationId_KeepsWholeGuid(string id)
+    {
+        IItem item = GetMockItem();
+        ChgcImageAnnotationsPart part = (ChgcImageAnnotationsPart)item.Parts[0];
+        part.Annotations.Add(new ChgcImageAnnotation
+        {
+            Id = id,
+            Eid = "n-aaron",
+            Target = part.Image,
+            Selector = "xywh=pixel:100,50,130,70"
+        });
+
+        RamChgcTeiItemComposer composer = new();
+        DocItemComposition output = new();
+        composer.Open(output);
+        composer.Compose(item);
+        composer.Close();
+
+        XElement zone = output.Document!.Descendants(
+            ChgcTeiItemComposer.TEI_NS + "zone").Single();
+        Assert.Equal("a-36c9730c-a7c9-4a28-8889-8d6015ee14fe",
+            zone.Attribute("source")?.Value);
+    }
+
     [Fact]
     public void Compose_Create_SinglePage()
     {

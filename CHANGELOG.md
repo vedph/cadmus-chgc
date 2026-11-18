@@ -1,5 +1,13 @@
 # History
 
+## 5.0.1
+
+- 2026-11-18: fixes to `Cadmus.Chgc.Export` for selectors and annotation IDs coming from Annotorious V3:
+  - TEI export failed with `Invalid selector` for the annotations saved by the frontend with Annotorious V3, whose selectors are JSON-serialized shapes. JSON rectangles and polygons are now accepted.
+  - added rectangles in SVG selectors, as Annotorious V3 rectangles can be rotated: the zone gets the bounding box of the rotated shape, and its SVG keeps the rotation.
+  - the `d` attribute of an exported SVG path contained the whole selector rather than the path data.
+  - the first character of an annotation ID was always dropped assuming it to be `#`, but this is no longer true for Annotorious V3 IDs. Now only an initial `#` is removed.
+
 ## 5.0.0
 
 - 2026-11-16: ⚠️ upgraded to .NET 11.

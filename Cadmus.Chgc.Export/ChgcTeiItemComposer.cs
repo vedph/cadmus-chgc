@@ -442,7 +442,8 @@ public abstract class ChgcTeiItemComposer : ItemComposer
         {
             ChgcImageAnnotation ann = sortedAnnotations[i];
             string annId = annIds[i];
-            string prefixedAnnGuid = "a-" + ann.Id[1..];
+            // the initial # was added to GUIDs only by Annotorious V2
+            string prefixedAnnGuid = "a-" + ann.Id.TrimStart('#');
             Logger?.LogInformation("Annotation {annId} {annEid} {annTarget}",
                 annId, ann.Eid, ann.Target);
 
