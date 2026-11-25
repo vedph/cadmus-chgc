@@ -1,5 +1,9 @@
 # History
 
+## 5.0.2
+
+- 2026-11-25: updated packages.
+
 ## 5.0.1
 
 - 2026-11-18: fixes to `Cadmus.Chgc.Export` for selectors and annotation IDs coming from Annotorious V3:

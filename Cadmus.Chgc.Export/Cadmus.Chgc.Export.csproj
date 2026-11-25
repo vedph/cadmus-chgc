@@ -14,13 +14,21 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
 		<PackageTags>Cadmus;export</PackageTags>
-		<Version>5.0.1</Version>
-		<FileVersion>5.0.1</FileVersion>
-		<AssemblyVersion>5.0.1</AssemblyVersion>
+		<Version>5.0.2</Version>
+		<FileVersion>5.0.2</FileVersion>
+		<AssemblyVersion>5.0.2</AssemblyVersion>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<!-- SourceLink-related -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Cadmus.Export" Version="18.0.0" />
+		<PackageReference Include="Cadmus.Export" Version="18.1.0" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" Version="10.0.402" />
 	</ItemGroup>
 
 	<ItemGroup>
